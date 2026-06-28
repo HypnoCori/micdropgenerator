@@ -66,9 +66,8 @@
 
   h1 .mic {
     display: inline-block;
-    font-size: 0.7em;
-    transform: rotate(-8deg);
-    margin-right: 6px;
+    font-size: 0.6em;
+    white-space: nowrap;
   }
 
   h1 em {
@@ -92,6 +91,15 @@
     color: var(--ink-soft);
     margin: 0 0 36px;
     max-width: 460px;
+    transition: opacity 0.2s ease;
+  }
+
+  .step-lead {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ink-mid);
+    margin: 0 0 16px;
   }
 
   .card {
@@ -291,18 +299,19 @@
 
 <div class="wrap">
 
-  <h1>The Mic Drop <em>Generator</em> <span class="mic">🎤</span></h1>
-  <p class="sub">Deine schlagfertigste Version, auf Knopfdruck.</p>
-  <p class="intro">Tipp rein, was Dir geschrieben wurde. Du bekommst sofort zwei souveräne Antworten, in Deiner eigenen Sprache.</p>
+  <h1>The Mic Drop<br><em>Generator</em> <span class="mic">🤜🏻🎤</span></h1>
+  <p class="sub" id="subText">Deine schlagfertigste Version, auf Knopfdruck.</p>
+  <p class="intro" id="introText">Tipp rein, was Dir geschrieben wurde. Du bekommst sofort zwei souveräne Antworten, in Deiner eigenen Sprache.</p>
 
   <!-- SCHRITT 1 -->
   <div class="card" id="step1">
     <label for="situationInput">Was wurde Dir geschrieben oder gesagt?</label>
     <textarea id="situationInput" placeholder="Zum Beispiel: Kundin fragt nach einem Rabatt"></textarea>
+    <div class="hint">Am besten kopierst Du die Nachricht eins zu eins, so wie Du sie bekommen hast.</div>
 
-    <label for="thoughtInput">Was denkst Du gerade, wenn Du die Nachricht liest?</label>
+    <label for="thoughtInput" style="margin-top: 24px;">Was denkst Du gerade, wenn Du die Nachricht liest?</label>
     <textarea id="thoughtInput" placeholder="Schreib einfach, was Dir als Erstes durch den Kopf geht."></textarea>
-    <div class="hint">Auch wenn es roh oder zu direkt klingt: das bleibt hier zwischen uns.</div>
+    <div class="hint">Genau dieser erste, ungefilterte Gedanke zeigt, was Du eigentlich sagen willst, bevor der Kopf dazwischenfunkt. Auch wenn er roh oder zu direkt klingt: das bleibt hier zwischen uns, und ist die Basis für eine Antwort, die wirklich zu Dir passt.</div>
 
     <div id="step1Error"></div>
     <div style="margin-top: 24px;">
@@ -312,11 +321,12 @@
 
   <!-- SCHRITT 2 -->
   <div class="card hidden" id="step2">
+    <div class="step-lead">Damit die Antwort auch wirklich zu Dir passt, beantworte kurz die folgende Frage. Ohne groß nachzudenken, einfach aus dem Bauch heraus. Vertrau Deiner Intuition.</div>
     <div class="mirror-question" id="mirrorQuestionText"></div>
-    <textarea id="mirrorAnswerInput" placeholder="Schreib einfach drauflos."></textarea>
+    <textarea id="mirrorAnswerInput" placeholder="Schreib einfach drauf los."></textarea>
     <div id="step2Error"></div>
     <div style="margin-top: 24px;">
-      <button id="step2Button" onclick="generateResponse()">Zeig mir meine Antwort</button>
+      <button id="step2Button" onclick="generateResponse()">Zeig mir meine Antwort 🤜🏻🎤</button>
     </div>
   </div>
 
@@ -368,6 +378,28 @@
   };
 
   let currentLawId = 2;
+
+  const HEADER_TEXT = {
+    step1: {
+      sub: "Deine schlagfertigste Version, auf Knopfdruck.",
+      intro: "Tipp rein, was Dir geschrieben wurde. Du bekommst sofort zwei souveräne Antworten, in Deiner eigenen Sprache.",
+    },
+    step2: {
+      sub: "Nur noch ein kurzer Moment.",
+      intro: "Diese Frage hat nichts mit Deiner Situation oben zu tun. Sie hilft nur dabei, dass die Antwort wirklich nach Dir klingt.",
+    },
+    result: {
+      sub: "Hier ist Dein Mic Drop 🤜🏻🎤",
+      intro: "Wähl die Version, die sich richtig anfühlt, oder generier eine neue.",
+    },
+  };
+
+  function setHeader(step) {
+    const content = HEADER_TEXT[step];
+    if (!content) return;
+    document.getElementById("subText").textContent = content.sub;
+    document.getElementById("introText").textContent = content.intro;
+  }
 
   function getCurrentMonthKey() {
     const d = new Date();
@@ -465,6 +497,7 @@
       document.getElementById("mirrorQuestionText").textContent = MIRROR_QUESTIONS[currentLawId];
       document.getElementById("step1").classList.add("hidden");
       document.getElementById("step2").classList.remove("hidden");
+      setHeader("step2");
     } catch (e) {
       showError("step1Error", "Verbindung fehlgeschlagen. Bitte versuch es nochmal.");
     }
@@ -491,7 +524,7 @@
       return;
     }
 
-    setLoading("step2Button", true, "Zeig mir meine Antwort");
+    setLoading("step2Button", true, "Zeig mir meine Antwort 🤜🏻🎤");
 
     try {
       const res = await fetch(FUNCTION_URL, {
@@ -509,7 +542,7 @@
 
       if (!res.ok) {
         showError("step2Error", data.error || "Es ist ein Fehler aufgetreten.");
-        setLoading("step2Button", false, "Zeig mir meine Antwort");
+        setLoading("step2Button", false, "Zeig mir meine Antwort 🤜🏻🎤");
         return;
       }
 
@@ -518,13 +551,14 @@
       document.getElementById("mutText").textContent = data.mut || "";
       document.getElementById("step2").classList.add("hidden");
       document.getElementById("resultSection").classList.remove("hidden");
+      setHeader("result");
 
       incrementUsage();
     } catch (e) {
       showError("step2Error", "Verbindung fehlgeschlagen. Bitte versuch es nochmal.");
     }
 
-    setLoading("step2Button", false, "Zeig mir meine Antwort");
+    setLoading("step2Button", false, "Zeig mir meine Antwort 🤜🏻🎤");
   }
 
   function copyText(elementId) {
