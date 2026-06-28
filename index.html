@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mic Drop Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --petrol: #137e89;
+    --petrol-deep: #0d6470;
+    --petrol-light: #c5e8ee;
+    --petrol-tint: #eef7f8;
+    --gold: #dfc791;
+    --gold-deep: #c8a95e;
+    --gold-pale: #faf6ed;
+    --ink: #0f2022;
+    --ink-mid: rgba(15,32,34,0.6);
+    --ink-soft: rgba(15,32,34,0.35);
+    --ink-faint: rgba(15,32,34,0.1);
+    --off-white: #FAFCFC;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--off-white);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  .counter-badge {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+    background: rgba(255,255,255,0.9);
+    border: 1px solid var(--ink-faint);
+    padding: 6px 12px;
+    z-index: 10;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: clamp(40px, 7vw, 60px);
+    line-height: 1.05;
+    margin: 0 0 18px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  h1 .mic {
+    display: inline-block;
+    font-size: 0.7em;
+    transform: rotate(-8deg);
+    margin-right: 6px;
+  }
+
+  h1 em {
+    color: var(--petrol);
+    font-style: italic;
+  }
+
+  .sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--ink-mid);
+    margin: 0 0 14px;
+    max-width: 480px;
+  }
+
+  .intro {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--ink-soft);
+    margin: 0 0 36px;
+    max-width: 460px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--ink-faint);
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+
+  label {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .hint {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 14px;
+    border: 1px solid var(--ink-faint);
+    background: var(--off-white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    resize: vertical;
+    margin-bottom: 24px;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--petrol);
+  }
+
+  textarea:last-of-type { margin-bottom: 0; }
+
+  .mirror-question {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: var(--ink);
+    background: var(--petrol-tint);
+    border-left: 2px solid var(--gold);
+    padding: 18px 20px;
+    margin-bottom: 24px;
+  }
+
+  button {
+    display: inline-block;
+    width: fit-content;
+    background: var(--petrol);
+    color: #fff;
+    border: none;
+    padding: 14px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  button:hover { background: var(--petrol-deep); }
+  button:disabled { background: var(--ink-faint); cursor: not-allowed; }
+
+  button.ghost {
+    background: transparent;
+    color: var(--petrol);
+    border: 1px solid var(--petrol);
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+  button.ghost:hover { background: var(--petrol-tint); }
+
+  .results {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 600px) {
+    .results { grid-template-columns: 1fr; }
+  }
+
+  .result-card {
+    background: #fff;
+    border: 1px solid var(--ink-faint);
+    padding: 28px 24px;
+  }
+
+  .result-card.warm { border-top: 3px solid var(--gold); }
+  .result-card.klar { border-top: 3px solid var(--petrol); }
+
+  .result-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+  }
+
+  .result-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px;
+    line-height: 1.5;
+    color: var(--ink);
+    margin-bottom: 20px;
+    min-height: 60px;
+  }
+
+  .result-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .copy-btn {
+    background: transparent;
+    border: 1px solid var(--ink-faint);
+    color: var(--ink-mid);
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+  .copy-btn:hover { border-color: var(--petrol); color: var(--petrol); }
+
+  .status {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin: 16px 0;
+  }
+
+  .error {
+    background: #fdf2f2;
+    border-left: 2px solid #c0392b;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #8c2e22;
+    margin-bottom: 20px;
+  }
+
+  .limit-reached {
+    text-align: center;
+    padding: 40px 24px;
+  }
+
+  .limit-reached p {
+    color: var(--ink-mid);
+    font-size: 16px;
+  }
+
+  .regen-row {
+    text-align: center;
+    margin-top: 24px;
+  }
+
+  .mut-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--ink);
+    background: var(--gold-pale);
+    border-left: 2px solid var(--gold-deep);
+    padding: 18px 22px;
+    margin-top: 20px;
+  }
+
+  .hidden { display: none; }
+
+  .spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--ink-faint);
+    border-top-color: var(--petrol);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <h1>The Mic Drop <em>Generator</em> <span class="mic">🎤</span></h1>
+  <p class="sub">Deine schlagfertigste Version, auf Knopfdruck.</p>
+  <p class="intro">Tipp rein, was Dir geschrieben wurde. Du bekommst sofort zwei souveräne Antworten, in Deiner eigenen Sprache.</p>
+
+  <!-- SCHRITT 1 -->
+  <div class="card" id="step1">
+    <label for="situationInput">Was wurde Dir geschrieben oder gesagt?</label>
+    <textarea id="situationInput" placeholder="Zum Beispiel: Kundin fragt nach einem Rabatt"></textarea>
+
+    <label for="thoughtInput">Was denkst Du gerade, wenn Du die Nachricht liest?</label>
+    <textarea id="thoughtInput" placeholder="Schreib einfach, was Dir als Erstes durch den Kopf geht."></textarea>
+    <div class="hint">Auch wenn es roh oder zu direkt klingt: das bleibt hier zwischen uns.</div>
+
+    <div id="step1Error"></div>
+    <div style="margin-top: 24px;">
+      <button id="step1Button" onclick="goToStep2()">Weiter</button>
+    </div>
+  </div>
+
+  <!-- SCHRITT 2 -->
+  <div class="card hidden" id="step2">
+    <div class="mirror-question" id="mirrorQuestionText"></div>
+    <textarea id="mirrorAnswerInput" placeholder="Schreib einfach drauflos."></textarea>
+    <div id="step2Error"></div>
+    <div style="margin-top: 24px;">
+      <button id="step2Button" onclick="generateResponse()">Zeig mir meine Antwort</button>
+    </div>
+  </div>
+
+  <!-- ERGEBNIS -->
+  <div class="hidden" id="resultSection">
+    <div class="results">
+      <div class="result-card warm">
+        <div class="result-label">Warm</div>
+        <div class="result-text" id="warmText"></div>
+        <div class="result-actions">
+          <button class="copy-btn" onclick="copyText('warmText')">Kopieren</button>
+        </div>
+      </div>
+      <div class="result-card klar">
+        <div class="result-label">Klar</div>
+        <div class="result-text" id="klarText"></div>
+        <div class="result-actions">
+          <button class="copy-btn" onclick="copyText('klarText')">Kopieren</button>
+        </div>
+      </div>
+    </div>
+    <div class="mut-text" id="mutText"></div>
+    <div class="regen-row">
+      <button class="ghost" onclick="generateResponse()">Neu generieren</button>
+    </div>
+  </div>
+
+  <!-- LIMIT ERREICHT -->
+  <div class="card limit-reached hidden" id="limitReached">
+    <p>Du hast Deine 30 Anfragen für diesen Monat aufgebraucht. Am Anfang des nächsten Monats stehen Dir wieder 30 neue zur Verfügung.</p>
+  </div>
+
+</div>
+
+<div class="counter-badge" id="counterDisplay"></div>
+
+<script>
+  const FUNCTION_URL = "/.netlify/functions/generate";
+  const MONTHLY_LIMIT = 30;
+  const STORAGE_KEY = "micdrop_usage";
+
+  // Die 5 fest formulierten Spiegel-Fragen, passend zu den 5 Gesetzen.
+  const MIRROR_QUESTIONS = {
+    1: "Du hast mit Deiner besten Freundin einen festen Termin: Sonntag, 14 Uhr, Spazieren gehen. Es ist schon das dritte Mal in diesem Monat, dass sie kurz vorher schreibt: \"Können wir nicht doch auf 16 Uhr verschieben? Bei mir kommt was dazwischen.\" Du hattest für danach schon was geplant. Was schreibst Du ihr?",
+    2: "Du hast Dir nach langem Überlegen etwas gekauft, das Dir wirklich wichtig war, eine teure Mitgliedschaft, ein Kurs, irgendetwas, das nur für Dich war. Du erzählst es Deiner besten Freundin, stolz und glücklich. Sie sagt: \"Krass, ist das nicht ganz schön viel Geld dafür?\" Was schreibst Du ihr zurück?",
+    3: "Du hattest Deine Freunde eingeladen und ehrlich gesagt: \"Ich räume nicht auf, ich koche nicht, lasst uns einfach Pizza bestellen.\" Eine Freundin schreibt danach, das habe sich für sie nicht einladend angefühlt, und sagt ab. Was schreibst Du ihr zurück?",
+    4: "Du organisierst seit Jahren den Mädelsabend, mit viel Liebe zum Detail, Deko, Essen, kleine Spiele. Diesmal sagt eine Freundin: \"Ehrlich, das war mir zu viel Programm, ich wollte einfach nur reden.\" Was schreibst Du ihr?",
+    5: "Du hast entschieden, dieses Jahr nicht zur Familie zu fahren, sondern allein über Weihnachten zu verreisen, weil Du das gerade wirklich brauchst. Eine Tante sagt am Telefon: \"Allein verreisen, an Weihnachten? Das könnte ich ja niemals machen. Was sagt denn Deine Mutter dazu?\" Was sagst Du ihr?"
+  };
+
+  let currentLawId = 2;
+
+  function getCurrentMonthKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${d.getMonth() + 1}`;
+  }
+
+  function getUsage() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { month: getCurrentMonthKey(), count: 0 };
+      const parsed = JSON.parse(raw);
+      if (parsed.month !== getCurrentMonthKey()) {
+        return { month: getCurrentMonthKey(), count: 0 };
+      }
+      return parsed;
+    } catch (e) {
+      return { month: getCurrentMonthKey(), count: 0 };
+    }
+  }
+
+  function saveUsage(usage) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(usage));
+  }
+
+  function renderCounter() {
+    const usage = getUsage();
+    const remaining = Math.max(0, MONTHLY_LIMIT - usage.count);
+    document.getElementById("counterDisplay").textContent =
+      `${remaining}/${MONTHLY_LIMIT} Anfragen diesen Monat`;
+    return remaining;
+  }
+
+  function incrementUsage() {
+    const usage = getUsage();
+    usage.count += 1;
+    saveUsage(usage);
+    renderCounter();
+  }
+
+  function limitAvailable() {
+    return renderCounter() > 0;
+  }
+
+  function showError(elementId, message) {
+    document.getElementById(elementId).innerHTML =
+      `<div class="error">${message}</div>`;
+  }
+
+  function clearError(elementId) {
+    document.getElementById(elementId).innerHTML = "";
+  }
+
+  function setLoading(buttonId, loading, normalText) {
+    const btn = document.getElementById(buttonId);
+    btn.disabled = loading;
+    btn.innerHTML = loading
+      ? `<span class="spinner"></span> Einen Moment ...`
+      : normalText;
+  }
+
+  async function goToStep2() {
+    clearError("step1Error");
+
+    if (!limitAvailable()) {
+      document.getElementById("step1").classList.add("hidden");
+      document.getElementById("limitReached").classList.remove("hidden");
+      return;
+    }
+
+    const situation = document.getElementById("situationInput").value.trim();
+    const thought = document.getElementById("thoughtInput").value.trim();
+
+    if (situation.length < 3) {
+      showError("step1Error", "Schreib kurz, was Dir geschrieben oder gesagt wurde.");
+      return;
+    }
+
+    setLoading("step1Button", true, "Weiter");
+
+    try {
+      const res = await fetch(FUNCTION_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ step: "classify", situation, thought }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError("step1Error", data.error || "Es ist ein Fehler aufgetreten.");
+        setLoading("step1Button", false, "Weiter");
+        return;
+      }
+
+      currentLawId = data.lawId || 2;
+      document.getElementById("mirrorQuestionText").textContent = MIRROR_QUESTIONS[currentLawId];
+      document.getElementById("step1").classList.add("hidden");
+      document.getElementById("step2").classList.remove("hidden");
+    } catch (e) {
+      showError("step1Error", "Verbindung fehlgeschlagen. Bitte versuch es nochmal.");
+    }
+
+    setLoading("step1Button", false, "Weiter");
+  }
+
+  async function generateResponse() {
+    clearError("step2Error");
+
+    if (!limitAvailable()) {
+      document.getElementById("step2").classList.add("hidden");
+      document.getElementById("resultSection").classList.add("hidden");
+      document.getElementById("limitReached").classList.remove("hidden");
+      return;
+    }
+
+    const situation = document.getElementById("situationInput").value.trim();
+    const thought = document.getElementById("thoughtInput").value.trim();
+    const mirrorAnswer = document.getElementById("mirrorAnswerInput").value.trim();
+
+    if (mirrorAnswer.length < 2) {
+      showError("step2Error", "Schreib kurz, wie Du antworten würdest.");
+      return;
+    }
+
+    setLoading("step2Button", true, "Zeig mir meine Antwort");
+
+    try {
+      const res = await fetch(FUNCTION_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          step: "generate",
+          situation,
+          thought,
+          mirrorAnswer,
+          lawId: currentLawId,
+        }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showError("step2Error", data.error || "Es ist ein Fehler aufgetreten.");
+        setLoading("step2Button", false, "Zeig mir meine Antwort");
+        return;
+      }
+
+      document.getElementById("warmText").textContent = data.warm || "";
+      document.getElementById("klarText").textContent = data.klar || "";
+      document.getElementById("mutText").textContent = data.mut || "";
+      document.getElementById("step2").classList.add("hidden");
+      document.getElementById("resultSection").classList.remove("hidden");
+
+      incrementUsage();
+    } catch (e) {
+      showError("step2Error", "Verbindung fehlgeschlagen. Bitte versuch es nochmal.");
+    }
+
+    setLoading("step2Button", false, "Zeig mir meine Antwort");
+  }
+
+  function copyText(elementId) {
+    const text = document.getElementById(elementId).textContent;
+    navigator.clipboard.writeText(text).then((e) => {
+      const btn = window.event ? window.event.target : null;
+      if (btn) {
+        const original = btn.textContent;
+        btn.textContent = "Kopiert";
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      }
+    });
+  }
+
+  renderCounter();
+</script>
+
+</body>
+</html>
