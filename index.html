@@ -299,7 +299,7 @@
 
 <div class="wrap">
 
-  <h1>The Mic Drop<br><em>Generator</em> <span class="mic">🤜🏻🎤</span></h1>
+  <h1>The Mic Drop<br><em>Generator</em> <span class="mic">🫳🏻🎤</span></h1>
   <p class="sub" id="subText">Deine schlagfertigste Version, auf Knopfdruck.</p>
   <p class="intro" id="introText">Tipp rein, was Dir geschrieben wurde. Du bekommst sofort zwei souveräne Antworten, in Deiner eigenen Sprache.</p>
 
@@ -312,6 +312,10 @@
     <label for="thoughtInput" style="margin-top: 24px;">Was denkst Du gerade, wenn Du die Nachricht liest?</label>
     <textarea id="thoughtInput" placeholder="Schreib einfach, was Dir als Erstes durch den Kopf geht."></textarea>
     <div class="hint">Genau dieser erste, ungefilterte Gedanke zeigt, was Du eigentlich sagen willst, bevor der Kopf dazwischenfunkt. Auch wenn er roh oder zu direkt klingt: das bleibt hier zwischen uns, und ist die Basis für eine Antwort, die wirklich zu Dir passt.</div>
+
+    <label for="wunschInput" style="margin-top: 24px;">Was würdest Du am liebsten antworten, wenn Du nichts zu riskieren hättest?</label>
+    <textarea id="wunschInput" placeholder="Schreib einfach drauf los. Ungefiltert, roh, direkt."></textarea>
+    <div class="hint">Das ist Deine echte Position. Das Tool macht daraus eine Antwort, die genau das sagt, aber so klingt, wie Du klingst.</div>
 
     <div id="step1Error"></div>
     <div style="margin-top: 24px;">
@@ -326,7 +330,7 @@
     <textarea id="mirrorAnswerInput" placeholder="Schreib einfach drauf los."></textarea>
     <div id="step2Error"></div>
     <div style="margin-top: 24px;">
-      <button id="step2Button" onclick="generateResponse()">Zeig mir meine Antwort 🤜🏻🎤</button>
+      <button id="step2Button" onclick="generateResponse()">Zeig mir meine Antwort 🫳🏻🎤</button>
     </div>
   </div>
 
@@ -389,7 +393,7 @@
       intro: "Diese Frage hat nichts mit Deiner Situation oben zu tun. Sie hilft nur dabei, dass die Antwort wirklich nach Dir klingt.",
     },
     result: {
-      sub: "Hier ist Dein Mic Drop 🤜🏻🎤",
+      sub: "Hier ist Dein Mic Drop 🫳🏻🎤",
       intro: "Wähl die Version, die sich richtig anfühlt, oder generier eine neue.",
     },
   };
@@ -471,6 +475,7 @@
 
     const situation = document.getElementById("situationInput").value.trim();
     const thought = document.getElementById("thoughtInput").value.trim();
+    const wunsch = document.getElementById("wunschInput").value.trim();
 
     if (situation.length < 3) {
       showError("step1Error", "Schreib kurz, was Dir geschrieben oder gesagt wurde.");
@@ -517,6 +522,7 @@
 
     const situation = document.getElementById("situationInput").value.trim();
     const thought = document.getElementById("thoughtInput").value.trim();
+    const wunsch = document.getElementById("wunschInput").value.trim();
     const mirrorAnswer = document.getElementById("mirrorAnswerInput").value.trim();
 
     if (mirrorAnswer.length < 2) {
@@ -524,7 +530,7 @@
       return;
     }
 
-    setLoading("step2Button", true, "Zeig mir meine Antwort 🤜🏻🎤");
+    setLoading("step2Button", true, "Zeig mir meine Antwort 🫳🏻🎤");
 
     try {
       const res = await fetch(FUNCTION_URL, {
@@ -535,6 +541,7 @@
           situation,
           thought,
           mirrorAnswer,
+          wunsch,
           lawId: currentLawId,
         }),
       });
@@ -542,7 +549,7 @@
 
       if (!res.ok) {
         showError("step2Error", data.error || "Es ist ein Fehler aufgetreten.");
-        setLoading("step2Button", false, "Zeig mir meine Antwort 🤜🏻🎤");
+        setLoading("step2Button", false, "Zeig mir meine Antwort 🫳🏻🎤");
         return;
       }
 
@@ -558,7 +565,7 @@
       showError("step2Error", "Verbindung fehlgeschlagen. Bitte versuch es nochmal.");
     }
 
-    setLoading("step2Button", false, "Zeig mir meine Antwort 🤜🏻🎤");
+    setLoading("step2Button", false, "Zeig mir meine Antwort 🫳🏻🎤");
   }
 
   function copyText(elementId) {
