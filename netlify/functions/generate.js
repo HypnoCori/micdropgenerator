@@ -52,6 +52,10 @@ KERNÜBERZEUGUNG, NIEMALS VERLETZEN:
   oder "Du kannst alles schaffen, wenn Du nur willst". Das ist leeres Coaching-Bla.
 - Die Formulierung ist immer: das Nervensystem verwechselt gerade Sicherheit mit Gefahr,
   basierend auf einer alten Erfahrung. NIEMALS: "Dein Nervensystem ist das Problem".
+- VERMEIDE verschachtelte Sätze über das Nervensystem, die grammatisch kippen können.
+  Beispiel für FALSCH: "Das ist eine Form von Selbstschutz, die Dein Nervensystem vertraut."
+  (ergibt keinen klaren Sinn). Stattdessen kurz und direkt: "Dein Nervensystem darf lernen,
+  dass das hier sicher ist."
 `;
 
 // FREIGEGEBENE BEISPIELE, von Corinna selbst geprüft und genehmigt.
@@ -61,20 +65,24 @@ KERNÜBERZEUGUNG, NIEMALS VERLETZEN:
 const APPROVED_EXAMPLES = [
   {
     situation: "Kundin fragt nach einem Rabatt auf den Preis",
-    warm: "Ich freu mich total, dass Du anfragst! Mein aktueller Preis ist 1.200 Euro, und dabei bleibe ich auch gern für Dich.",
+    warm: "Ich freu mich, dass Du anfragst. Mein Preis ist 1.200 Euro, und ich freue mich, wenn Du dabei bist.",
     klar: "Mein aktueller Preis ist 1.200 Euro. Ich freue mich, wenn Du dabei bist.",
+    falsch: "Alles klar, der Preis bleibt wie er ist. / Nein, kein Rabatt. / Der Preis ist nicht verhandelbar.",
+    warum_falsch: "Klingt abweisend und zickig, nicht souverän. Souverän hält die Grenze UND lässt die Tür offen.",
   },
   {
     situation: "Bekannte ohne echten Einfluss kommentiert den Preis abwertend",
-    warm: "Ja, das ist mein Preis, und ich steh total dahinter.",
+    warm: "Ja, das ist mein Preis, und ich stehe voll dahinter.",
     klar: "Ja, das ist mein Preis.",
+    falsch: "Alles klar. / Friss oder stirb. / Das ist meine Entscheidung.",
+    warum_falsch: "Klingt trotzig oder defensiv, nicht ruhig und sicher.",
   },
 ];
 
 function formatExamples() {
   return APPROVED_EXAMPLES.map(
     (ex) =>
-      `Business-Nachricht: "${ex.situation}"\nGutes Beispiel "warm": "${ex.warm}"\nGutes Beispiel "klar": "${ex.klar}"`
+      `Business-Nachricht: "${ex.situation}"\nGutes Beispiel "warm": "${ex.warm}"\nGutes Beispiel "klar": "${ex.klar}"\nSO NICHT (klingt zickig oder abweisend, nicht souverän): "${ex.falsch}"\nWarum falsch: ${ex.warum_falsch}`
   ).join("\n\n");
 }
 
@@ -281,6 +289,12 @@ Spiel stünde. Das ist ihre echte Kernaussage zur Business-Nachricht. Du nimmst 
 die Substanz (die eigentliche Grenze, die eigentliche Position), NICHT den rohen Ton, falls er
 zu schroff oder unprofessionell ist.
 
+WICHTIGSTE STILREGEL: Souverän ist NICHT dasselbe wie abweisend, trotzig oder zickig.
+Souverän hält die Grenze UND lässt die Tür offen. Die Antwort darf kurz sein, muss aber trotzdem
+warm wirken. Beispiel für FALSCH (klingt zickig): "Der Preis bleibt wie er ist. / Alles klar."
+Beispiel für RICHTIG (souverän): "Mein aktueller Preis ist X. Ich freue mich, wenn Du dabei bist."
+Der Unterschied: RICHTIG hält die Grenze, ohne die Person abzuweisen.
+
 VON CORINNA FREIGEGEBENE BEISPIELE (orientiere Dich stark an diesem Ton und dieser Länge,
 das ist der verlässlichste Maßstab für "richtig"):
 ${formatExamples()}
@@ -293,7 +307,16 @@ Erzeuge GENAU DREI Texte:
 
 3. "mut": ein kurzer Ermutigungssatz (maximal 2 Sätze), KEINE Antwort an die Kundin, sondern eine Zeile NUR für die Nutzerin selbst, die ihr Mut macht, für sich einzustehen. Muss konkret auf IHRE geschilderte Business-Situation eingehen, nicht generisch sein. Darf einen kurzen Nervensystem-Gedanken einbauen (siehe Kernüberzeugung), muss aber ermutigend und erleichternd klingen, nicht das Problem nochmal aufmachen oder Symptome (wie Herzrasen) erneut betonen.
 
+GRAMMATIK-REGEL für alle drei Texte: Schreibe einfache, kurze Hauptsätze. Vermeide komplizierte
+Schachtelsätze und Relativsätze (Sätze mit "der/die/das ... " mitten im Satz), weil diese oft
+grammatisch kippen. Lieber zwei kurze, klare Sätze als einen langen, verschachtelten.
+
 Alle drei folgen den Brand-Voice-Regeln und der Kernüberzeugung oben, ohne Ausnahme.
+
+LETZTE KONTROLLE VOR DER AUSGABE: Geht durch jeden der drei Texte und prüfe, ob ein
+Gedankenstrich (– oder —) enthalten ist. Falls ja, ersetze ihn durch einen Punkt oder
+Doppelpunkt und formuliere den Satz so um, dass er trotzdem grammatisch korrekt bleibt.
+Gedankenstriche sind NIEMALS erlaubt, ohne jede Ausnahme.
 
 Antworte AUSSCHLIESSLICH als valides JSON-Objekt, ohne Markdown-Codeblock, ohne weiteren Text, in genau diesem Format:
 {"warm": "...", "klar": "...", "mut": "..."}
@@ -328,6 +351,20 @@ Besonderheiten: ${styleProfile.besonderheiten}
       if (!parsed.mut) {
         parsed.mut = "Du darfst für Dich einstehen. Genau jetzt.";
       }
+
+      // Sicherheitsnetz: Gedankenstriche werden hart entfernt, egal was die KI liefert.
+      // Ersetzt " – " oder " — " durch einen Punkt plus Großschreibung des Folgewortes,
+      // damit kein grammatisch hängender Satz entsteht.
+      function removeEmDashes(text) {
+        if (!text) return text;
+        return text
+          .replace(/\s*[–—]\s*([a-zäöüß])/g, (match, letter) => `. ${letter.toUpperCase()}`)
+          .replace(/[–—]/g, ".");
+      }
+
+      parsed.warm = removeEmDashes(parsed.warm);
+      parsed.klar = removeEmDashes(parsed.klar);
+      parsed.mut = removeEmDashes(parsed.mut);
 
       return {
         statusCode: 200,
