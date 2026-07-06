@@ -250,7 +250,7 @@ Wähle das Muster, das am besten passt, auch wenn keines perfekt passt. Antworte
     }
 
     if (step === "generate") {
-      const { situation, thought, mirrorAnswer, lawId } = payload;
+      const { situation, thought, mirrorAnswer, lawId, wunsch } = payload;
 
       if (!situation || !mirrorAnswer) {
         return {
@@ -276,18 +276,11 @@ ${law.kern}
 
 AUFGABE:
 Die Nutzerin hat folgende Business-Nachricht erhalten und überlegt, wie sie antworten soll.
-Du bekommst außerdem ein STIL-PROFIL (siehe unten). Dieses Profil beschreibt NUR, wie die
-Nutzerin schreibt, wenn sie entspannt und ungefiltert ist (Länge, Ton, Direktheit, Besonderheiten).
-Du kennst NICHT den Inhalt, zu dem dieses Stil-Profil ursprünglich gehörte, und das ist auch
-nicht nötig. Nutze ausschließlich dieses Stil-Profil, um den TON der Business-Antwort zu treffen.
-Der INHALT der Antwort kommt zu 100% aus der Business-Nachricht und dem Gesetz oben, NIEMALS
-aus irgendeinem anderen Thema. Übersetze die Stil-Merkmale in ein professionelles, aber
-persönlich klingendes Business-Register, nicht 1 zu 1 die gleiche Lockerheit.
-
-Zusätzlich hat die Nutzerin geschrieben, was sie eigentlich sagen würde, wenn nichts auf dem
-Spiel stünde. Das ist ihre echte Kernaussage zur Business-Nachricht. Du nimmst aus diesem Text
-die Substanz (die eigentliche Grenze, die eigentliche Position), NICHT den rohen Ton, falls er
-zu schroff oder unprofessionell ist.
+Du bekommst außerdem ein STIL-PROFIL (siehe unten im User-Teil). Dieses Profil beschreibt
+NUR, wie die Nutzerin schreibt, wenn sie entspannt und ungefiltert ist (Länge, Ton, Direktheit,
+Besonderheiten). Nutze ausschließlich dieses Stil-Profil, um den TON der Business-Antwort zu
+treffen. Der INHALT der Antwort kommt zu 100% aus der Business-Nachricht und dem Gesetz oben.
+Übersetze die Stil-Merkmale in ein professionelles, aber persönlich klingendes Business-Register.
 
 WICHTIGSTE STILREGEL: Souverän ist NICHT dasselbe wie abweisend, trotzig oder zickig.
 Souverän hält die Grenze UND lässt die Tür offen. Die Antwort darf kurz sein, muss aber trotzdem
@@ -329,9 +322,9 @@ Business-Nachricht, auf die sie antworten will: ${situation}
 
 Ihr erster, ungefilterter Gedanke zur Business-Nachricht: ${thought || "(nicht angegeben)"}
 
-Ihre Kernaussage, wenn nichts auf dem Spiel stünde (Substanz, nicht Ton übernehmen): ${mirrorAnswer}
+Was sie eigentlich antworten würde, wenn nichts auf dem Spiel stünde (das ist ihre echte Position, nimm die Substanz, nicht unbedingt den Ton wörtlich): ${wunsch || "(nicht angegeben)"}
 
-STIL-PROFIL (nur für Ton, kein Inhalt):
+STIL-PROFIL (ausschließlich für den Ton der Antwort, kein Inhalt daraus übernehmen):
 Länge: ${styleProfile.laenge}
 Ton: ${styleProfile.ton}
 Direktheit: ${styleProfile.direktheit}
