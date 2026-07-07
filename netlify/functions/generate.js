@@ -77,11 +77,18 @@ Die Nutzerin hat in ihren Eingaben selbst geschrieben. Passe folgende Stil-Eleme
 
 const APPROVED_EXAMPLES = [
   {
-    situation: "Kundin fragt nach einem Rabatt",
+    situation: "Kundin fragt explizit nach einem Rabatt: Könntest Du den Preis für mich etwas senken?",
     verbindend: "Ich freu mich, dass Du anfragst. Mein Preis ist 1.200 Euro, und ich freue mich, wenn Du dabei bist.",
     praezise: "Mein aktueller Preis ist 1.200 Euro. Ich freue mich, wenn Du dabei bist.",
     falsch: "Alles klar, der Preis bleibt wie er ist. / Nein, kein Rabatt.",
     warum_falsch: "Klingt abweisend und zickig. Souverän hält die Grenze UND lässt die Tür offen.",
+  },
+  {
+    situation: "Kundin sagt nur, dass es ihr zu teuer ist, fragt aber NICHT nach Anpassung: Das ist mir grad zu teuer, passt für mich nicht.",
+    verbindend: "Schade, dass es dieses Jahr nicht passt. Ich wünsch Dir alles Gute.",
+    praezise: "Schade, dass es nicht passt. Alles Gute für Dich.",
+    falsch: "Mein Preis bleibt wie er ist. / Ich kann leider nicht nachgeben.",
+    warum_falsch: "Niemand hat nach einer Preisänderung gefragt. Diese Antwort reagiert auf eine Frage, die nie gestellt wurde.",
   },
 ];
 
@@ -221,13 +228,18 @@ ${tonRegel}
 
 Haltung (${law.name}): ${law.kern}
 
-STIL-ANPASSUNG: Die Nutzerin schreibt "${duSchreibweise}". Übernimm das exakt so in alle Antworten.
+STIL-ANPASSUNG für die "antwort": Die Nutzerin schreibt "${duSchreibweise}". Übernimm das exakt so in die Antwort.
+
+IMMER in "mut": Du/Dein/Dich/Dir wird IMMER großgeschrieben, weil das Corinnas eigene Markenstimme ist, unabhängig davon, wie die Nutzerin selbst schreibt.
 
 FREIGEGEBENE BEISPIELE:
 ${formatExamples()}
 
 Erzeuge GENAU ZWEI Texte:
-1. "antwort": Die fertige Antwort für die Business-Situation, im gewählten Kanal-Format und Ton-Modus. Inhalt kommt aus der Situation und dem Wunsch der Nutzerin.
+1. "antwort": Die fertige Antwort für die Business-Situation, im gewählten Kanal-Format und Ton-Modus.
+
+KRITISCH: Die Antwort darf NUR auf das eingehen, was die andere Person tatsächlich geschrieben oder gesagt hat. Nicht auf das, was sie vielleicht gemeint haben könnte. Nicht auf ein Schema, das bei ähnlichen Situationen passt. Wenn jemand sagt "das ist mir zu teuer", hat sie NICHT nach einer Preisanpassung gefragt. Die Antwort darf also nicht "mein Preis bleibt wie er ist" enthalten, weil das niemand gefragt hat. Sie antwortet auf die tatsächliche Aussage, nicht auf eine imaginierte Folgefrage.
+
 2. "mut": Maximal 2 Sätze NUR für die Nutzerin selbst. Konkret auf ihre Situation bezogen, ermutigend, darf kurz das Nervensystem ansprechen.
 
 Antworte NUR als valides JSON ohne Markdown:
@@ -257,6 +269,16 @@ Was sich verändern würde, wenn ihr das leicht fällt: ${vision || "(nicht ange
 
       parsed.antwort = removeEmDashes(parsed.antwort);
       parsed.mut = removeEmDashes(parsed.mut);
+
+      // Sicherheitsnetz: Im mut-Text immer Du/Dein/Dich/Dir großschreiben
+      // (Corinnas Markenstimme, unabhängig vom Schreibstil der Nutzerin)
+      if (parsed.mut) {
+        parsed.mut = parsed.mut
+          .replace(/\bdu\b/g, "Du")
+          .replace(/\bdich\b/g, "Dich")
+          .replace(/\bdein\b/gi, (m) => m[0].toUpperCase() + m.slice(1))
+          .replace(/\bdir\b/g, "Dir");
+      }
 
       return { statusCode: 200, headers: corsHeaders(), body: JSON.stringify(parsed) };
     }
