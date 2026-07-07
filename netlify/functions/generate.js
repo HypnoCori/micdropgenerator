@@ -1,118 +1,96 @@
-// netlify/functions/generate.js
-//
-// Diese Funktion läuft NICHT im Browser, sondern auf dem Server.
-// Der API-Key ist hier sicher, weil dieser Code beim Nutzer nie sichtbar ist.
-//
-// Sie übernimmt zwei Aufgaben, je nach "step":
-//   step "classify" -> ordnet die Situation einem der 5 Gesetze zu
-//   step "generate" -> erzeugt die zwei finalen Antwortvarianten (Warm / Klar)
-
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = "claude-sonnet-4-6";
 
-// Die 5 Gesetze, im Hintergrund-Prompt als Haltung verwendet.
 const LAWS = {
-  1: {
-    name: "The Law of Boundaries",
-    kern: "Grenzen sind nicht herzlos. Sie sind Klarheit. Nicht nachgeben, wenn eine Grenze unter sozialen Druck gerät. Kurz, ruhig, ohne Schuldgefühl.",
-  },
-  2: {
-    name: "The Law of Worth",
-    kern: "Der eigene Wert oder Preis ist keine Verhandlungsbasis. Keine Erklärung, keine Rechtfertigung, kein 'weil'. Ein Preis oder eine Entscheidung ist eine Tatsache, kein Argument.",
-  },
-  3: {
-    name: "The Law of Integrity",
-    kern: "Feedback ernst nehmen, ohne sich selbst dafür zu bestrafen oder zu überkompensieren. Zuhören ist etwas anderes als sich schuldig fühlen. Das Nervensystem speichert das Feedback gerade als Angriff, weil es eine ähnliche Situation schon einmal als gefährlich erlebt hat, und greift jetzt auf diesen alten Wissensstand zurück. Das ist nicht die Wahrheit der aktuellen Situation, nur eine alte Schutzreaktion, die neu lernen kann.",
-  },
-  4: {
-    name: "The Law of Clarity",
-    kern: "Auf Kritik nicht mit mehr antworten (mehr Erklärung, mehr Zugeständnis, mehr Einsatz), sondern mit Klarheit. Tiefe statt Menge. Auch hier greift das Nervensystem auf eine alte, gespeicherte Erfahrung zurück (Kritik war früher gefährlich), nicht auf die Wahrheit von heute.",
-  },
-  5: {
-    name: "The Law of Silence",
-    kern: "Vor Außenstehenden ohne echten Einfluss auf die Entscheidung keine Rechtfertigung. Kurz bestätigen, nicht erklären, Thema wechseln. Schweigen ist Souveränität, nicht Schwäche.",
-  },
+  1: { name: "The Law of Boundaries", kern: "Grenzen sind nicht herzlos. Sie sind Klarheit. Nicht nachgeben, wenn eine Grenze unter sozialen Druck gerät. Kurz, ruhig, ohne Schuldgefühl." },
+  2: { name: "The Law of Worth", kern: "Der eigene Wert oder Preis ist keine Verhandlungsbasis. Keine Erklärung, keine Rechtfertigung, kein 'weil'. Ein Preis ist eine Tatsache, kein Argument." },
+  3: { name: "The Law of Integrity", kern: "Feedback ernst nehmen, ohne sich selbst zu bestrafen. Zuhören ist etwas anderes als sich schuldig fühlen. Das Nervensystem speichert Feedback als Angriff, weil es eine ähnliche Situation früher als gefährlich erlebt hat. Das ist nicht die Wahrheit von heute." },
+  4: { name: "The Law of Clarity", kern: "Auf Kritik nicht mit mehr antworten, sondern mit Klarheit. Tiefe statt Menge. Das Nervensystem greift auf alte Erfahrungen zurück, nicht auf die Wahrheit von heute." },
+  5: { name: "The Law of Silence", kern: "Vor Außenstehenden ohne echten Einfluss keine Rechtfertigung. Kurz bestätigen, nicht erklären. Schweigen ist Souveränität, nicht Schwäche." },
 };
 
-// Corinnas Kernüberzeugung. Das ist die wichtigste Stelle im gesamten Prompt,
-// weil sie verhindert, dass die KI Sätze erzeugt, die ihrer Philosophie widersprechen.
+const KANAL_REGELN = {
+  whatsapp: `
+FORMAT: WhatsApp-Nachricht.
+- Maximal 1-2 Sätze, kurz wie eine echte Textnachricht
+- Keine Anrede, kein formeller Abschluss
+- Locker, direkt, wie man wirklich tippt
+- Kein "Liebe Grüße" oder ähnliche Floskeln
+`,
+  email: `
+FORMAT: E-Mail.
+- Kurze Anrede (z.B. "Hallo [Vorname]," oder "Hi,")
+- 2-4 Sätze im Hauptteil
+- Kurzer Abschluss (z.B. "Viele Grüße" oder "Herzlich")
+- Strukturierter als WhatsApp, aber nicht steif
+`,
+  kommentar: `
+FORMAT: Öffentlicher Kommentar (Instagram, LinkedIn o.ä.).
+- 1-2 Sätze, die auch für alle Mitleser geschrieben sind
+- Keine persönliche Anrede
+- Souverän und ruhig, weil das Publikum mitliest
+- Kein langer Erklärtext, kein Rechtfertigen
+`,
+};
+
+const TON_REGELN = {
+  verbindend: `
+TON: Verbindend.
+Ziel: Die Grenze klar halten UND die Beziehung wahren. Die andere Person soll sich gesehen fühlen, nicht abgewiesen.
+Die Antwort darf Wärme zeigen, darf auf die Person eingehen, ohne dabei die eigene Position aufzuweichen.
+Beispiel-Qualität: "Ich freu mich, dass Du anfragst. Mein Preis ist X, und ich freue mich, wenn Du dabei bist."
+`,
+  praezise: `
+TON: Präzise.
+Ziel: Klar und auf den Punkt, ohne viel Drumherum. Nicht kalt, aber auch keine extra Wärme.
+Die Antwort sagt genau das, was gesagt werden muss, nicht mehr.
+Beispiel-Qualität: "Mein Preis ist X. Ich freue mich, wenn Du dabei bist."
+`,
+};
+
 const CORE_PHILOSOPHY = `
 KERNÜBERZEUGUNG, NIEMALS VERLETZEN:
-- Das Nervensystem ist NIEMALS das Problem. Es ist NICHT kaputt und muss NICHT heilen.
-  Es schützt, mit einem veralteten Programm. Es verwechselt aktuell Sicherheit mit Gefahr,
-  basierend auf einer alten, echten Erfahrung, nicht auf der Wahrheit von heute.
-- Grundprinzip: Neuroplastizität. Was das Nervensystem einmal gelernt hat, kann es neu lernen,
-  bis zum letzten Atemzug. Aber NUR, wenn es sich sicher fühlt. Nicht durch Disziplin, nicht durch
-  Mut, nicht durch reines Mindset, nicht durch "inneres Kind umarmen", nicht durch große
-  kathartische Heil-Übungen oder Weinen. Sicherheit entsteht eher ruhig, oft mit einem
-  Gegenüber, nicht durch Überflutung mit Gefühlen.
-- NIEMALS das Wort "heilen" oder "Heilung" in Bezug auf das Nervensystem verwenden.
-- "Trauma" und "Trigger" nur verwenden, wenn es wirklich passt, niemals inflationär.
-- NIEMALS generische Empowerment-Phrasen wie "Wenn ich es geschafft habe, kannst Du es auch"
-  oder "Du kannst alles schaffen, wenn Du nur willst". Das ist leeres Coaching-Bla.
-- Die Formulierung ist immer: das Nervensystem verwechselt gerade Sicherheit mit Gefahr,
-  basierend auf einer alten Erfahrung. NIEMALS: "Dein Nervensystem ist das Problem".
-- VERMEIDE verschachtelte Sätze über das Nervensystem, die grammatisch kippen können.
-  Beispiel für FALSCH: "Das ist eine Form von Selbstschutz, die Dein Nervensystem vertraut."
-  (ergibt keinen klaren Sinn). Stattdessen kurz und direkt: "Dein Nervensystem darf lernen,
-  dass das hier sicher ist."
+- Das Nervensystem ist NIEMALS das Problem. Es schützt, mit einem veralteten Programm.
+- NIEMALS "heilen" oder "Heilung" beim Nervensystem verwenden.
+- NIEMALS generische Empowerment-Phrasen.
+- Die Formulierung ist immer: das Nervensystem verwechselt gerade Sicherheit mit Gefahr.
+- NIEMALS: "Dein Nervensystem ist das Problem".
+- Keine verschachtelten Relativsätze, die grammatisch kippen können.
 `;
 
-// FREIGEGEBENE BEISPIELE, von Corinna selbst geprüft und genehmigt.
-// Neue gute (oder schlechte) Beispiele werden hier ergänzt, sobald Corinna sie freigibt.
-// Das ist der Hauptmechanismus, um die KI näher an Corinnas tatsächlichen Geschmack
-// heranzuführen, ohne das Modell selbst neu trainieren zu müssen.
+const BRAND_VOICE = `
+SCHREIBREGELN, verpflichtend ohne Ausnahme:
+- Keine Gedankenstriche (– oder —) als Satzverbinder. Immer Punkt oder Doppelpunkt stattdessen.
+- Kein Gendern.
+- Kein Coaching-Bla: kein "Journey", "Potenzial entfalten", "ganzheitlich", "Leichtigkeit".
+- Kurze, einfache Hauptsätze. Keine verschachtelten Relativsätze.
+- Souverän bedeutet: klar und ruhig, ohne Rechtfertigung. Nicht hart, nicht zickig, nicht abweisend.
+- FALSCH (zickig): "Der Preis bleibt wie er ist." / "Alles klar, nein."
+- RICHTIG (souverän): "Mein Preis ist X. Ich freue mich, wenn Du dabei bist."
+
+STIL-ANPASSUNG:
+Die Nutzerin hat in ihren Eingaben selbst geschrieben. Passe folgende Stil-Elemente an ihre eigenen Texte an:
+- Großschreibung von "du/Du", "dein/Dein" etc.: exakt so übernehmen, wie sie es selbst schreibt
+- Satzlänge und Direktheit: aus ihren Eingaben ableiten
+- Keine typischen KI-Formulierungen verwenden
+`;
+
 const APPROVED_EXAMPLES = [
   {
-    situation: "Kundin fragt nach einem Rabatt auf den Preis",
-    warm: "Ich freu mich, dass Du anfragst. Mein Preis ist 1.200 Euro, und ich freue mich, wenn Du dabei bist.",
-    klar: "Mein aktueller Preis ist 1.200 Euro. Ich freue mich, wenn Du dabei bist.",
-    falsch: "Alles klar, der Preis bleibt wie er ist. / Nein, kein Rabatt. / Der Preis ist nicht verhandelbar.",
-    warum_falsch: "Klingt abweisend und zickig, nicht souverän. Souverän hält die Grenze UND lässt die Tür offen.",
-  },
-  {
-    situation: "Bekannte ohne echten Einfluss kommentiert den Preis abwertend",
-    warm: "Ja, das ist mein Preis, und ich stehe voll dahinter.",
-    klar: "Ja, das ist mein Preis.",
-    falsch: "Alles klar. / Friss oder stirb. / Das ist meine Entscheidung.",
-    warum_falsch: "Klingt trotzig oder defensiv, nicht ruhig und sicher.",
+    situation: "Kundin fragt nach einem Rabatt",
+    verbindend: "Ich freu mich, dass Du anfragst. Mein Preis ist 1.200 Euro, und ich freue mich, wenn Du dabei bist.",
+    praezise: "Mein aktueller Preis ist 1.200 Euro. Ich freue mich, wenn Du dabei bist.",
+    falsch: "Alles klar, der Preis bleibt wie er ist. / Nein, kein Rabatt.",
+    warum_falsch: "Klingt abweisend und zickig. Souverän hält die Grenze UND lässt die Tür offen.",
   },
 ];
 
 function formatExamples() {
   return APPROVED_EXAMPLES.map(
     (ex) =>
-      `Business-Nachricht: "${ex.situation}"\nGutes Beispiel "warm": "${ex.warm}"\nGutes Beispiel "klar": "${ex.klar}"\nSO NICHT (klingt zickig oder abweisend, nicht souverän): "${ex.falsch}"\nWarum falsch: ${ex.warum_falsch}`
+      `Situation: "${ex.situation}"\nGut (verbindend): "${ex.verbindend}"\nGut (präzise): "${ex.praezise}"\nSO NICHT: "${ex.falsch}"\nWarum falsch: ${ex.warum_falsch}`
   ).join("\n\n");
 }
-
-const BRAND_VOICE = `
-Du schreibst im Stil von Corinna Eichholz, Hypnose- und Nervensystemcoach für Unternehmerinnen.
-Diese Regeln sind verpflichtend, ohne Ausnahme:
-- "Du", "Dein", "Dich", "Dir" werden IMMER großgeschrieben.
-- Kein Gendern, keinerlei Ausnahmen.
-- Keine Gedankenstriche als Satzverbinder, lieber Punkt oder Doppelpunkt.
-- Kein Coaching-Bla: keine Worte wie "unlock", "Potenzial entfalten", "ganzheitlich", "Journey", "Leichtigkeit".
-- Keine Entschuldigungen oder Abschwächungen in der generierten Antwort selbst.
-- Kurze, klare Sätze. Konkret statt abstrakt.
-- Souverän bedeutet: kurz, ruhig, ohne Rechtfertigung. Nicht hart, nicht kalt, nicht unhöflich.
-
-Stil-Referenz, echte Sätze von Corinna (zur Orientierung am Ton, nicht zum Kopieren):
-"Du warst niemals falsch. Du warst ein Leben lang brillant darin, Dich zu schützen."
-"Grenzen sind nicht das Problem. Dein Nervensystem ist das Problem." (ACHTUNG: dieser exakte
-zweite Satz ist VERALTET und darf NIEMALS verwendet werden, siehe Kernüberzeugung unten.
-Richtig wäre: "Dein Nervensystem verwechselt hier gerade Sicherheit mit Gefahr.")
-"Wer seinen Preis erklärt, zweifelt selbst daran."
-"Du bist nicht blockiert. Du bist beschützt."
-"Das ist kein Mindset-Problem. Das ist Biologie."
-
-WICHTIGE SPERRE: Auch die "klar"-Variante darf NIEMALS auf ein abgehacktes, einzelnes Wort
-wie "Punkt." als Satzende hinauslaufen (Beispiel für FALSCH: "Mein Preis ist 1.200 Euro. Punkt.").
-Das wirkt kalt und unprofessionell, nicht souverän. Souverän und kurz heißt: ein vollständiger,
-ruhiger Satz, der nichts erklärt, aber auch nichts abschneidet. Näher an der echten Stil-Referenz
-oben: "Mein aktueller Preis ist 1.200 Euro. Ich freue mich, wenn Du dabei bist." ist ein gutes
-Beispiel für "klar", nicht zu weich, aber auch nicht schroff.
-`;
 
 function corsHeaders() {
   return {
@@ -148,31 +126,30 @@ async function callClaude(systemPrompt, userPrompt, maxTokens) {
   return textBlock ? textBlock.text : "";
 }
 
-// Zieht NUR abstrakte Stilmerkmale aus dem privaten Beispieltext, niemals den Inhalt.
-// Der Rückgabewert enthält keine Wörter aus dem Originaltext mehr, nur Stichworte
-// über Länge, Ton, Direktheit und Besonderheiten. So kann der Inhalt der
-// Freundinnen-Antwort strukturell nicht in die Business-Antwort durchrutschen,
-// weil die KI im nächsten Schritt den Originaltext gar nicht mehr zu sehen bekommt.
-async function extractStyleProfile(mirrorAnswer) {
+async function extractStyleProfile(texts) {
+  const combined = texts.filter(Boolean).join("\n\n---\n\n");
   const systemPrompt = `
-Du analysierst AUSSCHLIESSLICH den Schreibstil eines Textes, niemals seinen Inhalt oder sein Thema.
-Gib NUR ein valides JSON-Objekt zurück, ohne Markdown, ohne weiteren Text, in genau diesem Format:
-{"laenge": "kurz/mittel/lang", "ton": "2-4 Stichworte", "direktheit": "niedrig/mittel/hoch", "besonderheiten": "2-4 Stichworte, z.B. Emojis, Umgangssprache, Ausrufe"}
+Du analysierst AUSSCHLIESSLICH den Schreibstil. Niemals Inhalt oder Themen erwähnen.
+Antworte NUR als valides JSON ohne Markdown:
+{"grossschreibung_du": true/false, "laenge": "kurz/mittel/lang", "ton": "2-3 Stichworte", "direktheit": "niedrig/mittel/hoch"}
 
-WICHTIG: Nenne niemals, worum es in dem Text inhaltlich geht. Keine Themen, keine Namen, keine
-konkreten Wörter aus dem Text. Nur reine Stil-Beobachtungen.
+"grossschreibung_du" ist true wenn die Person "Du", "Dein" etc. großschreibt, false wenn kleingeschrieben.
   `.trim();
 
-  const userPrompt = `Text: ${mirrorAnswer}`;
-
   try {
-    const raw = await callClaude(systemPrompt, userPrompt, 120);
+    const raw = await callClaude(systemPrompt, `Texte zur Analyse:\n${combined}`, 80);
     const cleaned = raw.replace(/```json|```/g, "").trim();
-    const parsed = JSON.parse(cleaned);
-    return parsed;
+    return JSON.parse(cleaned);
   } catch (e) {
-    return { laenge: "mittel", ton: "neutral, klar", direktheit: "mittel", besonderheiten: "keine" };
+    return { grossschreibung_du: true, laenge: "mittel", ton: "direkt, klar", direktheit: "mittel" };
   }
+}
+
+function removeEmDashes(text) {
+  if (!text) return text;
+  return text
+    .replace(/\s*[–—]\s*([a-zäöüß])/g, (_, letter) => `. ${letter.toUpperCase()}`)
+    .replace(/[–—]/g, ".");
 }
 
 exports.handler = async function (event) {
@@ -181,32 +158,18 @@ exports.handler = async function (event) {
   }
 
   if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      headers: corsHeaders(),
-      body: JSON.stringify({ error: "Nur POST erlaubt." }),
-    };
+    return { statusCode: 405, headers: corsHeaders(), body: JSON.stringify({ error: "Nur POST erlaubt." }) };
   }
 
   if (!ANTHROPIC_API_KEY) {
-    return {
-      statusCode: 500,
-      headers: corsHeaders(),
-      body: JSON.stringify({
-        error: "Server ist nicht korrekt konfiguriert (API-Key fehlt).",
-      }),
-    };
+    return { statusCode: 500, headers: corsHeaders(), body: JSON.stringify({ error: "API-Key fehlt." }) };
   }
 
   let payload;
   try {
     payload = JSON.parse(event.body);
   } catch (e) {
-    return {
-      statusCode: 400,
-      headers: corsHeaders(),
-      body: JSON.stringify({ error: "Ungültige Anfrage." }),
-    };
+    return { statusCode: 400, headers: corsHeaders(), body: JSON.stringify({ error: "Ungültige Anfrage." }) };
   }
 
   const { step } = payload;
@@ -214,168 +177,93 @@ exports.handler = async function (event) {
   try {
     if (step === "classify") {
       const { situation, thought } = payload;
-
       if (!situation || situation.trim().length < 3) {
-        return {
-          statusCode: 400,
-          headers: corsHeaders(),
-          body: JSON.stringify({ error: "Bitte beschreibe kurz, was Dir geschrieben wurde." }),
-        };
+        return { statusCode: 400, headers: corsHeaders(), body: JSON.stringify({ error: "Bitte beschreibe kurz, was Dir geschrieben wurde." }) };
       }
 
       const systemPrompt = `
-Du analysierst eine Business-Situation und ordnest sie genau EINEM von 5 Mustern zu.
-Antworte ausschließlich mit einer einzigen Ziffer von 1 bis 5, ohne jeden weiteren Text, ohne Satzzeichen.
-
-1 = Eine Grenze wird unter sozialen Druck gesetzt (jemand will, dass nachgegeben wird, z.B. Termin, Absage, Sonderwunsch).
-2 = Der eigene Preis oder Wert wird infrage gestellt oder kommentiert.
-3 = Jemand ist unzufrieden mit einer bereits erbrachten Leistung und es entsteht der Impuls, sich selbst die Schuld zu geben oder zu überkompensieren.
-4 = Kritik kommt, und der Impuls ist, mit mehr zu reagieren (mehr Erklärung, mehr Bonus, mehr Einsatz) statt mit Klarheit.
-5 = Eine außenstehende Person ohne echten Einfluss auf die Entscheidung stellt etwas infrage (z.B. Familie, Bekannte).
-
-Wähle das Muster, das am besten passt, auch wenn keines perfekt passt. Antworte NUR mit der Ziffer.
+Ordne die Situation genau EINEM von 5 Mustern zu. Antworte NUR mit einer Ziffer von 1-5.
+1 = Grenze unter sozialem Druck (Termin, Absage, Sonderwunsch)
+2 = Preis oder Wert wird infrage gestellt
+3 = Unzufriedenheit mit erbrachter Leistung, Impuls sich schuldig zu fühlen
+4 = Kritik kommt, Impuls mit mehr zu reagieren
+5 = Außenstehende Person ohne Einfluss stellt etwas infrage
       `.trim();
 
-      const userPrompt = `Situation: ${situation}\nErster Gedanke dazu: ${thought || "(nicht angegeben)"}`;
-
-      const raw = await callClaude(systemPrompt, userPrompt, 5);
+      const raw = await callClaude(systemPrompt, `Situation: ${situation}\nGedanke: ${thought || ""}`, 5);
       const match = raw.match(/[1-5]/);
-      const lawId = match ? parseInt(match[0], 10) : 2;
-
-      return {
-        statusCode: 200,
-        headers: corsHeaders(),
-        body: JSON.stringify({ lawId }),
-      };
+      return { statusCode: 200, headers: corsHeaders(), body: JSON.stringify({ lawId: match ? parseInt(match[0]) : 2 }) };
     }
 
     if (step === "generate") {
-      const { situation, thought, mirrorAnswer, lawId, wunsch } = payload;
+      const { situation, thought, wunsch, vision, lawId, kanal, tonmodus } = payload;
 
-      if (!situation || !mirrorAnswer) {
-        return {
-          statusCode: 400,
-          headers: corsHeaders(),
-          body: JSON.stringify({ error: "Es fehlen Angaben für die Antwort-Generierung." }),
-        };
+      if (!situation) {
+        return { statusCode: 400, headers: corsHeaders(), body: JSON.stringify({ error: "Es fehlen Angaben." }) };
       }
 
       const law = LAWS[lawId] || LAWS[2];
+      const kanalRegel = KANAL_REGELN[kanal] || KANAL_REGELN.whatsapp;
+      const tonRegel = TON_REGELN[tonmodus] || TON_REGELN.verbindend;
       const variationSeed = Math.floor(Math.random() * 10000);
 
-      // Schritt A: Nur den Stil aus der privaten Antwort ziehen, Inhalt wird danach verworfen.
-      const styleProfile = await extractStyleProfile(mirrorAnswer);
+      const styleProfile = await extractStyleProfile([thought, wunsch, vision]);
+      const duSchreibweise = styleProfile.grossschreibung_du ? "Du/Dein/Dich/Dir" : "du/dein/dich/dir";
 
       const systemPrompt = `
 ${BRAND_VOICE}
 
 ${CORE_PHILOSOPHY}
 
-Haltung, die in JEDER generierten Antwort gilt (${law.name}):
-${law.kern}
+${kanalRegel}
 
-AUFGABE:
-Die Nutzerin hat folgende Business-Nachricht erhalten und überlegt, wie sie antworten soll.
-Du bekommst außerdem ein STIL-PROFIL (siehe unten im User-Teil). Dieses Profil beschreibt
-NUR, wie die Nutzerin schreibt, wenn sie entspannt und ungefiltert ist (Länge, Ton, Direktheit,
-Besonderheiten). Nutze ausschließlich dieses Stil-Profil, um den TON der Business-Antwort zu
-treffen. Der INHALT der Antwort kommt zu 100% aus der Business-Nachricht und dem Gesetz oben.
-Übersetze die Stil-Merkmale in ein professionelles, aber persönlich klingendes Business-Register.
+${tonRegel}
 
-WICHTIGSTE STILREGEL: Souverän ist NICHT dasselbe wie abweisend, trotzig oder zickig.
-Souverän hält die Grenze UND lässt die Tür offen. Die Antwort darf kurz sein, muss aber trotzdem
-warm wirken. Beispiel für FALSCH (klingt zickig): "Der Preis bleibt wie er ist. / Alles klar."
-Beispiel für RICHTIG (souverän): "Mein aktueller Preis ist X. Ich freue mich, wenn Du dabei bist."
-Der Unterschied: RICHTIG hält die Grenze, ohne die Person abzuweisen.
+Haltung (${law.name}): ${law.kern}
 
-VON CORINNA FREIGEGEBENE BEISPIELE (orientiere Dich stark an diesem Ton und dieser Länge,
-das ist der verlässlichste Maßstab für "richtig"):
+STIL-ANPASSUNG: Die Nutzerin schreibt "${duSchreibweise}". Übernimm das exakt so in alle Antworten.
+
+FREIGEGEBENE BEISPIELE:
 ${formatExamples()}
 
-Erzeuge GENAU DREI Texte:
+Erzeuge GENAU ZWEI Texte:
+1. "antwort": Die fertige Antwort für die Business-Situation, im gewählten Kanal-Format und Ton-Modus. Inhalt kommt aus der Situation und dem Wunsch der Nutzerin.
+2. "mut": Maximal 2 Sätze NUR für die Nutzerin selbst. Konkret auf ihre Situation bezogen, ermutigend, darf kurz das Nervensystem ansprechen.
 
-1. "warm": etwas persönlicher und wärmer im Ton, aber genauso klar und ohne Rechtfertigung. Antwort auf die Business-Nachricht. Maximal 2-3 Sätze.
+Antworte NUR als valides JSON ohne Markdown:
+{"antwort": "...", "mut": "..."}
 
-2. "klar": kürzer, direkter, sehr nah an der Haltung der 5 Gesetze (keine Erklärung, kein "weil"). Antwort auf die Business-Nachricht. Maximal 2-3 Sätze.
-
-3. "mut": ein kurzer Ermutigungssatz (maximal 2 Sätze), KEINE Antwort an die Kundin, sondern eine Zeile NUR für die Nutzerin selbst, die ihr Mut macht, für sich einzustehen. Muss konkret auf IHRE geschilderte Business-Situation eingehen, nicht generisch sein. Darf einen kurzen Nervensystem-Gedanken einbauen (siehe Kernüberzeugung), muss aber ermutigend und erleichternd klingen, nicht das Problem nochmal aufmachen oder Symptome (wie Herzrasen) erneut betonen.
-
-GRAMMATIK-REGEL für alle drei Texte: Schreibe einfache, kurze Hauptsätze. Vermeide komplizierte
-Schachtelsätze und Relativsätze (Sätze mit "der/die/das ... " mitten im Satz), weil diese oft
-grammatisch kippen. Lieber zwei kurze, klare Sätze als einen langen, verschachtelten.
-
-Alle drei folgen den Brand-Voice-Regeln und der Kernüberzeugung oben, ohne Ausnahme.
-
-LETZTE KONTROLLE VOR DER AUSGABE: Geht durch jeden der drei Texte und prüfe, ob ein
-Gedankenstrich (– oder —) enthalten ist. Falls ja, ersetze ihn durch einen Punkt oder
-Doppelpunkt und formuliere den Satz so um, dass er trotzdem grammatisch korrekt bleibt.
-Gedankenstriche sind NIEMALS erlaubt, ohne jede Ausnahme.
-
-Antworte AUSSCHLIESSLICH als valides JSON-Objekt, ohne Markdown-Codeblock, ohne weiteren Text, in genau diesem Format:
-{"warm": "...", "klar": "...", "mut": "..."}
-
-(Interner Hinweis, nicht erwähnen: Variations-Kennung ${variationSeed}. Falls dies eine Wiederholungs-Anfrage zur gleichen Situation ist, formuliere spürbar anders als eine naheliegende Standardformulierung, ohne den Sinn zu verändern.)
+(Intern: Variations-Kennung ${variationSeed})
       `.trim();
 
       const userPrompt = `
-Business-Nachricht, auf die sie antworten will: ${situation}
-
-Ihr erster, ungefilterter Gedanke zur Business-Nachricht: ${thought || "(nicht angegeben)"}
-
-Was sie eigentlich antworten würde, wenn nichts auf dem Spiel stünde (das ist ihre echte Position, nimm die Substanz, nicht unbedingt den Ton wörtlich): ${wunsch || "(nicht angegeben)"}
-
-STIL-PROFIL (ausschließlich für den Ton der Antwort, kein Inhalt daraus übernehmen):
-Länge: ${styleProfile.laenge}
-Ton: ${styleProfile.ton}
-Direktheit: ${styleProfile.direktheit}
-Besonderheiten: ${styleProfile.besonderheiten}
+Erhaltene Nachricht: ${situation}
+Was gerade in ihr vorgeht: ${thought || "(nicht angegeben)"}
+Was sie eigentlich sagen würde: ${wunsch || "(nicht angegeben)"}
+Was sich verändern würde, wenn ihr das leicht fällt: ${vision || "(nicht angegeben)"}
       `.trim();
 
-      const raw = await callClaude(systemPrompt, userPrompt, 650);
+      const raw = await callClaude(systemPrompt, userPrompt, 500);
 
       let parsed;
       try {
         const cleaned = raw.replace(/```json|```/g, "").trim();
         parsed = JSON.parse(cleaned);
       } catch (e) {
-        parsed = { warm: raw, klar: raw, mut: "" };
+        parsed = { antwort: raw, mut: "" };
       }
 
-      if (!parsed.mut) {
-        parsed.mut = "Du darfst für Dich einstehen. Genau jetzt.";
-      }
+      if (!parsed.mut) parsed.mut = "Du darfst für Dich einstehen. Genau jetzt.";
 
-      // Sicherheitsnetz: Gedankenstriche werden hart entfernt, egal was die KI liefert.
-      // Ersetzt " – " oder " — " durch einen Punkt plus Großschreibung des Folgewortes,
-      // damit kein grammatisch hängender Satz entsteht.
-      function removeEmDashes(text) {
-        if (!text) return text;
-        return text
-          .replace(/\s*[–—]\s*([a-zäöüß])/g, (match, letter) => `. ${letter.toUpperCase()}`)
-          .replace(/[–—]/g, ".");
-      }
-
-      parsed.warm = removeEmDashes(parsed.warm);
-      parsed.klar = removeEmDashes(parsed.klar);
+      parsed.antwort = removeEmDashes(parsed.antwort);
       parsed.mut = removeEmDashes(parsed.mut);
 
-      return {
-        statusCode: 200,
-        headers: corsHeaders(),
-        body: JSON.stringify(parsed),
-      };
+      return { statusCode: 200, headers: corsHeaders(), body: JSON.stringify(parsed) };
     }
 
-    return {
-      statusCode: 400,
-      headers: corsHeaders(),
-      body: JSON.stringify({ error: "Unbekannter Schritt." }),
-    };
+    return { statusCode: 400, headers: corsHeaders(), body: JSON.stringify({ error: "Unbekannter Schritt." }) };
+
   } catch (err) {
-    return {
-      statusCode: 500,
-      headers: corsHeaders(),
-      body: JSON.stringify({ error: "Es ist ein Fehler aufgetreten. Bitte versuch es nochmal." }),
-    };
+    return { statusCode: 500, headers: corsHeaders(), body: JSON.stringify({ error: "Es ist ein Fehler aufgetreten. Bitte versuch es nochmal." }) };
   }
 };
