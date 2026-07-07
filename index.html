@@ -8,157 +8,158 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --petrol: #137e89;
-    --petrol-deep: #0d6470;
-    --petrol-light: #c5e8ee;
+    --petrol: #2e8896;
+    --petrol-deep: #1f6b78;
+    --petrol-light: #C5E8EE;
     --petrol-tint: #eef7f8;
-    --gold: #dfc791;
-    --gold-deep: #c8a95e;
+    --gold: #C8BA94;
+    --gold-deep: #a89660;
     --gold-pale: #faf6ed;
-    --ink: #0f2022;
-    --ink-mid: rgba(15,32,34,0.6);
-    --ink-soft: rgba(15,32,34,0.35);
-    --ink-faint: rgba(15,32,34,0.1);
+    --ink: #0B1D51;
+    --ink-mid: rgba(11,29,81,0.6);
+    --ink-soft: rgba(11,29,81,0.35);
+    --ink-faint: rgba(11,29,81,0.1);
     --off-white: #FAFCFC;
   }
 
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    margin: 0;
     background: var(--off-white);
     color: var(--ink);
     font-family: 'DM Sans', sans-serif;
     font-weight: 300;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
   }
 
   .wrap {
-    max-width: 640px;
+    max-width: 600px;
     margin: 0 auto;
     padding: 48px 24px 80px;
-  }
-
-  .counter-badge {
-    position: fixed;
-    bottom: 18px;
-    right: 18px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.03em;
-    color: var(--ink-soft);
-    background: rgba(255,255,255,0.9);
-    border: 1px solid var(--ink-faint);
-    padding: 6px 12px;
-    z-index: 10;
   }
 
   h1 {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 400;
-    font-size: clamp(40px, 7vw, 60px);
+    font-size: clamp(38px, 7vw, 58px);
     line-height: 1.05;
-    margin: 0 0 18px;
     color: var(--ink);
     letter-spacing: -0.01em;
+    margin-bottom: 16px;
   }
 
-  h1 .mic {
-    display: inline-block;
-    font-size: 0.6em;
-    white-space: nowrap;
-  }
-
-  h1 em {
-    color: var(--petrol);
-    font-style: italic;
-  }
+  h1 em { color: var(--petrol); font-style: italic; }
+  h1 .mic { font-size: 0.6em; }
 
   .sub {
-    font-family: 'DM Sans', sans-serif;
     font-size: 19px;
     font-weight: 400;
     color: var(--ink-mid);
-    margin: 0 0 14px;
-    max-width: 480px;
+    margin-bottom: 6px;
   }
 
   .intro {
-    font-family: 'DM Sans', sans-serif;
     font-size: 15px;
     font-weight: 300;
     color: var(--ink-soft);
-    margin: 0 0 36px;
-    max-width: 460px;
-    transition: opacity 0.2s ease;
+    margin-bottom: 36px;
   }
 
-  .step-lead {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--ink-mid);
-    margin: 0 0 16px;
-  }
+  .schritt { display: none; }
+  .schritt.aktiv { display: block; }
 
-  .card {
-    background: #fff;
-    border: 1px solid var(--ink-faint);
-    padding: 32px;
-    margin-bottom: 24px;
-  }
-
-  label {
-    display: block;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
+  .auswahl-label {
+    font-size: 13px;
     font-weight: 500;
-    color: var(--ink);
-    margin-bottom: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
   }
 
-  .hint {
+  .auswahl-gruppe {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .auswahl-btn {
+    padding: 12px 22px;
+    border: 1.5px solid var(--ink-faint);
+    background: #fff;
+    color: var(--ink-mid);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .auswahl-btn:hover { border-color: var(--petrol); color: var(--petrol); }
+  .auswahl-btn.gewaehlt { background: var(--petrol); border-color: var(--petrol); color: #fff; font-weight: 500; }
+
+  .frage-label {
+    display: block;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .frage-hint {
     font-size: 13px;
     color: var(--ink-soft);
-    margin-top: 8px;
     font-style: italic;
+    margin-bottom: 14px;
   }
 
   textarea {
     width: 100%;
-    min-height: 90px;
+    min-height: 100px;
     padding: 14px;
-    border: 1px solid var(--ink-faint);
-    background: var(--off-white);
+    border: 1.5px solid var(--ink-faint);
+    background: #fff;
     font-family: 'DM Sans', sans-serif;
     font-size: 16px;
     color: var(--ink);
     resize: vertical;
-    margin-bottom: 24px;
+    line-height: 1.6;
   }
 
-  textarea:focus {
-    outline: none;
-    border-color: var(--petrol);
-  }
+  textarea:focus { outline: none; border-color: var(--petrol); }
 
-  textarea:last-of-type { margin-bottom: 0; }
-
-  .mirror-question {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    font-style: italic;
-    color: var(--ink);
+  .checkbox-zeile {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 16px;
     background: var(--petrol-tint);
-    border-left: 2px solid var(--gold);
-    padding: 18px 20px;
-    margin-bottom: 24px;
+    border: 1px solid var(--petrol-light);
   }
 
-  button {
+  .checkbox-zeile input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    flex-shrink: 0;
+    accent-color: var(--petrol);
+    cursor: pointer;
+  }
+
+  .checkbox-zeile label {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  .weiter-btn {
     display: inline-block;
-    width: fit-content;
     background: var(--petrol);
     color: #fff;
     border: none;
@@ -166,45 +167,40 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 15px;
     font-weight: 500;
-    letter-spacing: 0.02em;
     cursor: pointer;
+    margin-top: 20px;
     transition: background 0.15s ease;
   }
 
-  button:hover { background: var(--petrol-deep); }
-  button:disabled { background: var(--ink-faint); cursor: not-allowed; }
+  .weiter-btn:hover { background: var(--petrol-deep); }
+  .weiter-btn:disabled { background: var(--ink-faint); cursor: not-allowed; color: var(--ink-soft); }
 
-  button.ghost {
-    background: transparent;
-    color: var(--petrol);
-    border: 1px solid var(--petrol);
-    padding: 10px 20px;
-    font-size: 13px;
-  }
-  button.ghost:hover { background: var(--petrol-tint); }
-
-  .results {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 8px;
+  .fortschritt {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 36px;
   }
 
-  @media (max-width: 600px) {
-    .results { grid-template-columns: 1fr; }
+  .fort-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+    transition: background 0.2s ease;
   }
 
-  .result-card {
+  .fort-dot.aktiv { background: var(--petrol); }
+  .fort-dot.fertig { background: var(--gold); }
+
+  .ergebnis-karte {
     background: #fff;
-    border: 1px solid var(--ink-faint);
+    border: 1.5px solid var(--ink-faint);
+    border-top: 3px solid var(--petrol);
     padding: 28px 24px;
+    margin-bottom: 24px;
   }
 
-  .result-card.warm { border-top: 3px solid var(--gold); }
-  .result-card.klar { border-top: 3px solid var(--petrol); }
-
-  .result-label {
-    font-family: 'DM Sans', sans-serif;
+  .ergebnis-label {
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.14em;
@@ -213,79 +209,122 @@
     margin-bottom: 16px;
   }
 
-  .result-text {
+  .ergebnis-text {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 21px;
+    font-size: 22px;
     line-height: 1.5;
     color: var(--ink);
     margin-bottom: 20px;
-    min-height: 60px;
   }
 
-  .result-actions {
-    display: flex;
-    gap: 10px;
-  }
-
-  .copy-btn {
+  .kopier-btn {
     background: transparent;
     border: 1px solid var(--ink-faint);
     color: var(--ink-mid);
-    padding: 8px 14px;
-    font-size: 12px;
-  }
-  .copy-btn:hover { border-color: var(--petrol); color: var(--petrol); }
-
-  .status {
-    font-size: 14px;
-    color: var(--ink-soft);
-    margin: 16px 0;
+    padding: 8px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s ease;
   }
 
-  .error {
-    background: #fdf2f2;
-    border-left: 2px solid #c0392b;
-    padding: 14px 18px;
-    font-size: 14px;
-    color: #8c2e22;
-    margin-bottom: 20px;
-  }
+  .kopier-btn:hover { border-color: var(--petrol); color: var(--petrol); }
 
-  .limit-reached {
-    text-align: center;
-    padding: 40px 24px;
-  }
-
-  .limit-reached p {
-    color: var(--ink-mid);
-    font-size: 16px;
-  }
-
-  .regen-row {
-    text-align: center;
-    margin-top: 24px;
-  }
-
-  .mut-text {
+  .mut-box {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 19px;
     line-height: 1.5;
     color: var(--ink);
     background: var(--gold-pale);
-    border-left: 2px solid var(--gold-deep);
+    border-left: 2px solid var(--gold);
     padding: 18px 22px;
-    margin-top: 20px;
+    margin-bottom: 24px;
   }
 
-  .hidden { display: none; }
+  .upsell-box {
+    background: var(--ink);
+    color: #fff;
+    padding: 28px 24px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .upsell-box p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 20px;
+  }
+
+  .upsell-box strong {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .upsell-cta {
+    display: inline-block;
+    background: var(--petrol);
+    color: #fff;
+    border: none;
+    padding: 14px 32px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+
+  .upsell-cta:hover { background: var(--petrol-deep); }
+
+  .neu-btn {
+    display: block;
+    margin: 0 auto;
+    background: transparent;
+    border: 1.5px solid var(--petrol);
+    color: var(--petrol);
+    padding: 12px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .neu-btn:hover { background: var(--petrol-tint); }
+
+  .fehler {
+    background: #fdf2f2;
+    border-left: 2px solid #c0392b;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #8c2e22;
+    margin-top: 12px;
+    display: none;
+  }
+
+  .fehler.sichtbar { display: block; }
+
+  .zaehler-badge {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: rgba(255,255,255,0.9);
+    border: 1px solid var(--ink-faint);
+    padding: 5px 10px;
+    font-family: 'DM Sans', sans-serif;
+    z-index: 10;
+  }
 
   .spinner {
     display: inline-block;
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--ink-faint);
-    border-top-color: var(--petrol);
+    width: 13px;
+    height: 13px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
     margin-right: 8px;
@@ -293,6 +332,7 @@
   }
 
   @keyframes spin { to { transform: rotate(360deg); } }
+  .hidden { display: none !important; }
 </style>
 </head>
 <body>
@@ -301,236 +341,269 @@
 
   <h1>The Mic Drop<br><em>Generator</em> <span class="mic">🫳🏻🎤</span></h1>
   <p class="sub" id="subText">Deine schlagfertigste Version, auf Knopfdruck.</p>
-  <p class="intro" id="introText">Tipp rein, was Dir geschrieben wurde. Du bekommst sofort zwei souveräne Antworten, in Deiner eigenen Sprache.</p>
+  <p class="intro" id="introText">Beantworte kurz ein paar Fragen. Du bekommst sofort eine souveräne Antwort, die wirklich nach Dir klingt.</p>
 
-  <!-- SCHRITT 1 -->
-  <div class="card" id="step1">
-    <label for="situationInput">Was wurde Dir geschrieben oder gesagt?</label>
-    <textarea id="situationInput" placeholder="Zum Beispiel: Kundin fragt nach einem Rabatt"></textarea>
-    <div class="hint">Am besten kopierst Du die Nachricht eins zu eins, so wie Du sie bekommen hast.</div>
-
-    <label for="thoughtInput" style="margin-top: 24px;">Was denkst Du gerade, wenn Du die Nachricht liest?</label>
-    <textarea id="thoughtInput" placeholder="Schreib einfach, was Dir als Erstes durch den Kopf geht."></textarea>
-    <div class="hint">Genau dieser erste, ungefilterte Gedanke zeigt, was Du eigentlich sagen willst, bevor der Kopf dazwischenfunkt. Auch wenn er roh oder zu direkt klingt: das bleibt hier zwischen uns, und ist die Basis für eine Antwort, die wirklich zu Dir passt.</div>
-
-    <label for="wunschInput" style="margin-top: 24px;">Was würdest Du am liebsten antworten, wenn Du nichts zu riskieren hättest?</label>
-    <textarea id="wunschInput" placeholder="Schreib einfach drauf los. Ungefiltert, roh, direkt."></textarea>
-    <div class="hint">Das ist Deine echte Position. Das Tool macht daraus eine Antwort, die genau das sagt, aber so klingt, wie Du klingst.</div>
-
-    <div id="step1Error"></div>
-    <div style="margin-top: 24px;">
-      <button id="step1Button" onclick="goToStep2()">Weiter</button>
-    </div>
+  <div class="fortschritt" id="fortschritt">
+    <div class="fort-dot aktiv" id="dot-0"></div>
+    <div class="fort-dot" id="dot-1"></div>
+    <div class="fort-dot" id="dot-2"></div>
+    <div class="fort-dot" id="dot-3"></div>
+    <div class="fort-dot" id="dot-4"></div>
+    <div class="fort-dot" id="dot-5"></div>
   </div>
 
-  <!-- SCHRITT 2 -->
-  <div class="card hidden" id="step2">
-    <div class="step-lead">Damit die Antwort auch wirklich zu Dir passt, beantworte kurz die folgende Frage. Ohne groß nachzudenken, einfach aus dem Bauch heraus. Vertrau Deiner Intuition.</div>
-    <div class="mirror-question" id="mirrorQuestionText"></div>
-    <textarea id="mirrorAnswerInput" placeholder="Schreib einfach drauf los."></textarea>
-    <div id="step2Error"></div>
-    <div style="margin-top: 24px;">
-      <button id="step2Button" onclick="generateResponse()">Zeig mir meine Antwort 🫳🏻🎤</button>
+  <!-- SCHRITT 0: Kanal -->
+  <div class="schritt aktiv" id="schritt-0">
+    <div class="auswahl-label">Wo kam die Nachricht an?</div>
+    <div class="auswahl-gruppe">
+      <button class="auswahl-btn" data-wert="whatsapp" onclick="waehle('kanal', this)">WhatsApp / DM</button>
+      <button class="auswahl-btn" data-wert="email" onclick="waehle('kanal', this)">E-Mail</button>
+      <button class="auswahl-btn" data-wert="kommentar" onclick="waehle('kommentar', this)">Kommentar / öffentlich</button>
     </div>
+    <div class="fehler" id="fehler-0">Bitte wähle einen Kanal aus.</div>
+    <button class="weiter-btn" onclick="naechsterSchritt(0)">Weiter</button>
+  </div>
+
+  <!-- SCHRITT 1: Ton -->
+  <div class="schritt" id="schritt-1">
+    <div class="auswahl-label">Wie soll die Antwort klingen?</div>
+    <div class="auswahl-gruppe">
+      <button class="auswahl-btn" data-wert="verbindend" onclick="waehle('ton', this)">Verbindend</button>
+      <button class="auswahl-btn" data-wert="praezise" onclick="waehle('ton', this)">Präzise</button>
+    </div>
+    <div class="fehler" id="fehler-1">Bitte wähle einen Ton aus.</div>
+    <button class="weiter-btn" onclick="naechsterSchritt(1)">Weiter</button>
+  </div>
+
+  <!-- SCHRITT 2: Situation -->
+  <div class="schritt" id="schritt-2">
+    <div class="frage-hint">Am besten kopiere die Nachricht eins zu eins, so wie Du sie bekommen hast.</div>
+    <textarea id="situation" placeholder="Zum Beispiel: Meine Kundin hat mir geschrieben..."></textarea>
+    <div class="fehler" id="fehler-2">Bitte schreib, was Dir geschrieben wurde.</div>
+    <button class="weiter-btn" id="weiter-2" onclick="naechsterSchritt(2)">Weiter</button>
+  </div>
+
+  <!-- SCHRITT 3: Was geht in Dir vor -->
+  <div class="schritt" id="schritt-3">
+    <div class="frage-hint">Was fühlst Du? Wütend? Unsicher? Verletzt? Schreib einfach frei, was grade da ist. Je echter, desto besser kann ich eine Antwort generieren, die wirklich zu Dir passt.</div>
+    <textarea id="thought" placeholder="Zum Beispiel: Ich bin wütend, ich spüre Enge in der Brust..."></textarea>
+    <div class="fehler" id="fehler-3">Schreib kurz, was in Dir vorgeht.</div>
+    <button class="weiter-btn" onclick="naechsterSchritt(3)">Weiter</button>
+  </div>
+
+  <!-- SCHRITT 4: Wunschantwort -->
+  <div class="schritt" id="schritt-4">
+    <div class="frage-hint">Wenn Du jetzt einfach rausschreiben könntest, was Du denkst, ohne Konsequenzen zu befürchten, was würdest Du dieser Person sagen?</div>
+    <textarea id="wunsch" placeholder="Schreib einfach drauf los."></textarea>
+    <div class="fehler" id="fehler-4">Schreib kurz, was Du eigentlich antworten würdest.</div>
+    <button class="weiter-btn" onclick="naechsterSchritt(4)">Weiter</button>
+  </div>
+
+  <!-- SCHRITT 5: Vision + Checkboxen -->
+  <div class="schritt" id="schritt-5">
+    <label class="frage-label" for="vision">Was würde sich für Dich und in Deinem Business verändern, wenn Du in solchen Momenten einfach souverän antworten könntest?</label>
+    <textarea id="vision" placeholder="Zum Beispiel: Ich würde endlich meinen Preis halten. Ich würde aufhören, mich klein zu machen..."></textarea>
+
+    <div class="checkbox-zeile" style="margin-top: 24px;">
+      <input type="checkbox" id="zustimmung-ki" required>
+      <label for="zustimmung-ki">Ich bin damit einverstanden, dass meine Eingaben zur Generierung meiner persönlichen Antwort an einen KI-Dienst übermittelt werden.</label>
+    </div>
+
+    <div class="checkbox-zeile">
+      <input type="checkbox" id="zustimmung-content">
+      <label for="zustimmung-content">Ich bin damit einverstanden, dass meine anonymisierten Antworten von Corinna Eichholz für Marketing- und Contentzwecke genutzt werden dürfen.</label>
+    </div>
+
+    <div class="fehler" id="fehler-5">Bitte stimme der Verarbeitung Deiner Daten zu, um fortzufahren.</div>
+    <button class="weiter-btn" id="generier-btn" onclick="generieren()">Zeig mir meine Antwort 🫳🏻🎤</button>
   </div>
 
   <!-- ERGEBNIS -->
-  <div class="hidden" id="resultSection">
-    <div class="results">
-      <div class="result-card warm">
-        <div class="result-label">Warm</div>
-        <div class="result-text" id="warmText"></div>
-        <div class="result-actions">
-          <button class="copy-btn" onclick="copyText('warmText')">Kopieren</button>
-        </div>
-      </div>
-      <div class="result-card klar">
-        <div class="result-label">Klar</div>
-        <div class="result-text" id="klarText"></div>
-        <div class="result-actions">
-          <button class="copy-btn" onclick="copyText('klarText')">Kopieren</button>
-        </div>
-      </div>
+  <div class="schritt" id="schritt-ergebnis">
+    <div class="ergebnis-karte">
+      <div class="ergebnis-label" id="ergebnis-label">Deine Antwort</div>
+      <div class="ergebnis-text" id="ergebnis-text"></div>
+      <button class="kopier-btn" onclick="kopieren()">Kopieren</button>
     </div>
-    <div class="mut-text" id="mutText"></div>
-    <div class="regen-row">
-      <button class="ghost" onclick="generateResponse()">Neu generieren</button>
-    </div>
-  </div>
 
-  <!-- LIMIT ERREICHT -->
-  <div class="card limit-reached hidden" id="limitReached">
-    <p>Du hast Deine 30 Anfragen für diesen Monat aufgebraucht. Am Anfang des nächsten Monats stehen Dir wieder 30 neue zur Verfügung.</p>
+    <div class="mut-box" id="mut-text"></div>
+
+    <div class="upsell-box">
+      <p>Der Generator hat Dir gerade die Antwort gegeben. Aber warum war das überhaupt so schwer? Und wie wird es leichter, ohne dass Du jedes Mal ein Tool brauchst?</p>
+      <p><strong>Das erlebst Du in Regulate.</strong></p>
+      <a class="upsell-cta" href="REGULATE_LINK_HIER" target="_blank">Das will ich.</a>
+    </div>
+
+    <button class="neu-btn" onclick="neuGenerieren()">Neu generieren</button>
   </div>
 
 </div>
 
-<div class="counter-badge" id="counterDisplay"></div>
+<div class="zaehler-badge" id="zaehler"></div>
 
 <script>
   const FUNCTION_URL = "/.netlify/functions/generate";
   const MONTHLY_LIMIT = 30;
-  const STORAGE_KEY = "micdrop_usage";
+  const STORAGE_KEY = "micdrop_v3";
 
-  // Die 5 fest formulierten Spiegel-Fragen, passend zu den 5 Gesetzen.
-  const MIRROR_QUESTIONS = {
-    1: "Du hast mit Deiner besten Freundin einen festen Termin: Sonntag, 14 Uhr, Spazieren gehen. Es ist schon das dritte Mal in diesem Monat, dass sie kurz vorher schreibt: \"Können wir nicht doch auf 16 Uhr verschieben? Bei mir kommt was dazwischen.\" Du hattest für danach schon was geplant. Was schreibst Du ihr?",
-    2: "Du hast Dir nach langem Überlegen etwas gekauft, das Dir wirklich wichtig war, eine teure Mitgliedschaft, ein Kurs, irgendetwas, das nur für Dich war. Du erzählst es Deiner besten Freundin, stolz und glücklich. Sie sagt: \"Krass, ist das nicht ganz schön viel Geld dafür?\" Was schreibst Du ihr zurück?",
-    3: "Du hattest Deine Freunde eingeladen und ehrlich gesagt: \"Ich räume nicht auf, ich koche nicht, lasst uns einfach Pizza bestellen.\" Eine Freundin schreibt danach, das habe sich für sie nicht einladend angefühlt, und sagt ab. Was schreibst Du ihr zurück?",
-    4: "Du organisierst seit Jahren den Mädelsabend, mit viel Liebe zum Detail, Deko, Essen, kleine Spiele. Diesmal sagt eine Freundin: \"Ehrlich, das war mir zu viel Programm, ich wollte einfach nur reden.\" Was schreibst Du ihr?",
-    5: "Du hast entschieden, dieses Jahr nicht zur Familie zu fahren, sondern allein über Weihnachten zu verreisen, weil Du das gerade wirklich brauchst. Eine Tante sagt am Telefon: \"Allein verreisen, an Weihnachten? Das könnte ich ja niemals machen. Was sagt denn Deine Mutter dazu?\" Was sagst Du ihr?"
+  let state = {
+    schritt: 0,
+    kanal: null,
+    ton: null,
+    situation: "",
+    thought: "",
+    wunsch: "",
+    vision: "",
+    lawId: 2,
   };
 
-  let currentLawId = 2;
+  const HEADER = [
+    { sub: "Deine schlagfertigste Version, auf Knopfdruck.", intro: "Beantworte kurz ein paar Fragen. Du bekommst sofort eine souveräne Antwort, die wirklich nach Dir klingt." },
+    { sub: "Wie soll Deine Antwort klingen?", intro: "Wähle den Ton, der zu dieser Situation passt." },
+    { sub: "Was wurde Dir geschrieben?", intro: "Kopiere die Nachricht am besten eins zu eins." },
+    { sub: "Was geht gerade in Dir vor?", intro: "Je ehrlicher Du hier bist, desto besser wird die Antwort." },
+    { sub: "Was würdest Du eigentlich sagen?", intro: "Deine echte Position ist die Grundlage für alles, was jetzt kommt." },
+    { sub: "Letzte Frage, dann bekommst Du Deine Antwort.", intro: "" },
+    { sub: "Hier ist Dein Mic Drop 🫳🏻🎤", intro: "Wähl die Version, die sich richtig anfühlt, oder generier eine neue." },
+  ];
 
-  const HEADER_TEXT = {
-    step1: {
-      sub: "Deine schlagfertigste Version, auf Knopfdruck.",
-      intro: "Tipp rein, was Dir geschrieben wurde. Du bekommst sofort zwei souveräne Antworten, in Deiner eigenen Sprache.",
-    },
-    step2: {
-      sub: "Nur noch ein kurzer Moment.",
-      intro: "Diese Frage hat nichts mit Deiner Situation oben zu tun. Sie hilft nur dabei, dass die Antwort wirklich nach Dir klingt.",
-    },
-    result: {
-      sub: "Hier ist Dein Mic Drop 🫳🏻🎤",
-      intro: "Wähl die Version, die sich richtig anfühlt, oder generier eine neue.",
-    },
-  };
-
-  function setHeader(step) {
-    const content = HEADER_TEXT[step];
-    if (!content) return;
-    document.getElementById("subText").textContent = content.sub;
-    document.getElementById("introText").textContent = content.intro;
+  function aktualisiereHeader(index) {
+    const h = HEADER[Math.min(index, HEADER.length - 1)];
+    document.getElementById("subText").textContent = h.sub;
+    document.getElementById("introText").textContent = h.intro;
   }
 
-  function getCurrentMonthKey() {
-    const d = new Date();
-    return `${d.getFullYear()}-${d.getMonth() + 1}`;
+  function aktualisiereFortschritt(aktiv) {
+    for (let i = 0; i < 6; i++) {
+      const dot = document.getElementById("dot-" + i);
+      if (!dot) continue;
+      if (i < aktiv) dot.className = "fort-dot fertig";
+      else if (i === aktiv) dot.className = "fort-dot aktiv";
+      else dot.className = "fort-dot";
+    }
+  }
+
+  function zeigeSchritt(n) {
+    document.querySelectorAll(".schritt").forEach(el => el.classList.remove("aktiv"));
+    const ziel = document.getElementById(n === 6 ? "schritt-ergebnis" : "schritt-" + n);
+    if (ziel) ziel.classList.add("aktiv");
+    state.schritt = n;
+    aktualisiereHeader(n);
+    aktualisiereFortschritt(Math.min(n, 5));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function waehle(typ, btn) {
+    const gruppe = btn.closest(".auswahl-gruppe");
+    gruppe.querySelectorAll(".auswahl-btn").forEach(b => b.classList.remove("gewaehlt"));
+    btn.classList.add("gewaehlt");
+    if (typ === "kanal" || btn.dataset.wert === "whatsapp" || btn.dataset.wert === "email") {
+      state.kanal = btn.dataset.wert;
+    } else if (btn.dataset.wert === "verbindend" || btn.dataset.wert === "praezise") {
+      state.ton = btn.dataset.wert;
+    } else {
+      state.kanal = btn.dataset.wert;
+    }
+  }
+
+  function zeigeFehler(id) {
+    document.getElementById(id).classList.add("sichtbar");
+  }
+
+  function versteckeFehler(id) {
+    document.getElementById(id).classList.remove("sichtbar");
+  }
+
+  async function naechsterSchritt(aktuell) {
+    versteckeFehler("fehler-" + aktuell);
+
+    if (aktuell === 0) {
+      if (!state.kanal) { zeigeFehler("fehler-0"); return; }
+      zeigeSchritt(1); return;
+    }
+
+    if (aktuell === 1) {
+      if (!state.ton) { zeigeFehler("fehler-1"); return; }
+      zeigeSchritt(2); return;
+    }
+
+    if (aktuell === 2) {
+      state.situation = document.getElementById("situation").value.trim();
+      if (state.situation.length < 3) { zeigeFehler("fehler-2"); return; }
+
+      const btn = document.getElementById("weiter-2");
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Einen Moment...';
+
+      try {
+        const res = await fetch(FUNCTION_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ step: "classify", situation: state.situation }),
+        });
+        const data = await res.json();
+        state.lawId = data.lawId || 2;
+      } catch (e) { state.lawId = 2; }
+
+      btn.disabled = false;
+      btn.textContent = "Weiter";
+      zeigeSchritt(3); return;
+    }
+
+    if (aktuell === 3) {
+      state.thought = document.getElementById("thought").value.trim();
+      if (state.thought.length < 2) { zeigeFehler("fehler-3"); return; }
+      zeigeSchritt(4); return;
+    }
+
+    if (aktuell === 4) {
+      state.wunsch = document.getElementById("wunsch").value.trim();
+      if (state.wunsch.length < 2) { zeigeFehler("fehler-4"); return; }
+      zeigeSchritt(5); return;
+    }
   }
 
   function getUsage() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { month: getCurrentMonthKey(), count: 0 };
-      const parsed = JSON.parse(raw);
-      if (parsed.month !== getCurrentMonthKey()) {
-        return { month: getCurrentMonthKey(), count: 0 };
-      }
-      return parsed;
-    } catch (e) {
-      return { month: getCurrentMonthKey(), count: 0 };
-    }
+      if (!raw) return { month: aktuellerMonat(), count: 0 };
+      const p = JSON.parse(raw);
+      if (p.month !== aktuellerMonat()) return { month: aktuellerMonat(), count: 0 };
+      return p;
+    } catch (e) { return { month: aktuellerMonat(), count: 0 }; }
   }
 
-  function saveUsage(usage) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(usage));
+  function aktuellerMonat() {
+    const d = new Date();
+    return `${d.getFullYear()}-${d.getMonth() + 1}`;
   }
 
-  function renderCounter() {
-    const usage = getUsage();
-    const remaining = Math.max(0, MONTHLY_LIMIT - usage.count);
-    document.getElementById("counterDisplay").textContent =
-      `${remaining}/${MONTHLY_LIMIT} Anfragen diesen Monat`;
-    return remaining;
+  function saveUsage(u) { localStorage.setItem(STORAGE_KEY, JSON.stringify(u)); }
+
+  function zeigeZaehler() {
+    const u = getUsage();
+    const rest = Math.max(0, MONTHLY_LIMIT - u.count);
+    document.getElementById("zaehler").textContent = `${rest}/${MONTHLY_LIMIT} diesen Monat`;
+    return rest;
   }
 
-  function incrementUsage() {
-    const usage = getUsage();
-    usage.count += 1;
-    saveUsage(usage);
-    renderCounter();
-  }
+  async function generieren() {
+    versteckeFehler("fehler-5");
 
-  function limitAvailable() {
-    return renderCounter() > 0;
-  }
+    const zustimmungKI = document.getElementById("zustimmung-ki").checked;
+    if (!zustimmungKI) { zeigeFehler("fehler-5"); return; }
 
-  function showError(elementId, message) {
-    document.getElementById(elementId).innerHTML =
-      `<div class="error">${message}</div>`;
-  }
+    state.vision = document.getElementById("vision").value.trim();
 
-  function clearError(elementId) {
-    document.getElementById(elementId).innerHTML = "";
-  }
-
-  function setLoading(buttonId, loading, normalText) {
-    const btn = document.getElementById(buttonId);
-    btn.disabled = loading;
-    btn.innerHTML = loading
-      ? `<span class="spinner"></span> Einen Moment ...`
-      : normalText;
-  }
-
-  async function goToStep2() {
-    clearError("step1Error");
-
-    if (!limitAvailable()) {
-      document.getElementById("step1").classList.add("hidden");
-      document.getElementById("limitReached").classList.remove("hidden");
+    if (zeigeZaehler() <= 0) {
+      document.getElementById("fehler-5").textContent = "Du hast Deine 30 Anfragen für diesen Monat aufgebraucht.";
+      zeigeFehler("fehler-5");
       return;
     }
 
-    const situation = document.getElementById("situationInput").value.trim();
-    const thought = document.getElementById("thoughtInput").value.trim();
-    const wunsch = document.getElementById("wunschInput").value.trim();
-
-    if (situation.length < 3) {
-      showError("step1Error", "Schreib kurz, was Dir geschrieben oder gesagt wurde.");
-      return;
-    }
-
-    setLoading("step1Button", true, "Weiter");
-
-    try {
-      const res = await fetch(FUNCTION_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ step: "classify", situation, thought }),
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        showError("step1Error", data.error || "Es ist ein Fehler aufgetreten.");
-        setLoading("step1Button", false, "Weiter");
-        return;
-      }
-
-      currentLawId = data.lawId || 2;
-      document.getElementById("mirrorQuestionText").textContent = MIRROR_QUESTIONS[currentLawId];
-      document.getElementById("step1").classList.add("hidden");
-      document.getElementById("step2").classList.remove("hidden");
-      setHeader("step2");
-    } catch (e) {
-      showError("step1Error", "Verbindung fehlgeschlagen. Bitte versuch es nochmal.");
-    }
-
-    setLoading("step1Button", false, "Weiter");
-  }
-
-  async function generateResponse() {
-    clearError("step2Error");
-
-    if (!limitAvailable()) {
-      document.getElementById("step2").classList.add("hidden");
-      document.getElementById("resultSection").classList.add("hidden");
-      document.getElementById("limitReached").classList.remove("hidden");
-      return;
-    }
-
-    const situation = document.getElementById("situationInput").value.trim();
-    const thought = document.getElementById("thoughtInput").value.trim();
-    const wunsch = document.getElementById("wunschInput").value.trim();
-    const mirrorAnswer = document.getElementById("mirrorAnswerInput").value.trim();
-
-    if (mirrorAnswer.length < 2) {
-      showError("step2Error", "Schreib kurz, wie Du antworten würdest.");
-      return;
-    }
-
-    setLoading("step2Button", true, "Zeig mir meine Antwort 🫳🏻🎤");
+    const btn = document.getElementById("generier-btn");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Deine Antwort wird erstellt...';
 
     try {
       const res = await fetch(FUNCTION_URL, {
@@ -538,49 +611,76 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           step: "generate",
-          situation,
-          thought,
-          mirrorAnswer,
-          wunsch,
-          lawId: currentLawId,
+          situation: state.situation,
+          thought: state.thought,
+          wunsch: state.wunsch,
+          vision: state.vision,
+          lawId: state.lawId,
+          kanal: state.kanal,
+          tonmodus: state.ton,
         }),
       });
+
       const data = await res.json();
 
       if (!res.ok) {
-        showError("step2Error", data.error || "Es ist ein Fehler aufgetreten.");
-        setLoading("step2Button", false, "Zeig mir meine Antwort 🫳🏻🎤");
+        document.getElementById("fehler-5").textContent = data.error || "Ein Fehler ist aufgetreten.";
+        zeigeFehler("fehler-5");
+        btn.disabled = false;
+        btn.innerHTML = "Zeig mir meine Antwort 🫳🏻🎤";
         return;
       }
 
-      document.getElementById("warmText").textContent = data.warm || "";
-      document.getElementById("klarText").textContent = data.klar || "";
-      document.getElementById("mutText").textContent = data.mut || "";
-      document.getElementById("step2").classList.add("hidden");
-      document.getElementById("resultSection").classList.remove("hidden");
-      setHeader("result");
+      const kanalLabel = state.kanal === "whatsapp" ? "WhatsApp" : state.kanal === "email" ? "E-Mail" : "Kommentar";
+      const tonLabel = state.ton === "verbindend" ? "Verbindend" : "Präzise";
+      document.getElementById("ergebnis-label").textContent = `${tonLabel} · ${kanalLabel}`;
+      document.getElementById("ergebnis-text").textContent = data.antwort || "";
+      document.getElementById("mut-text").textContent = data.mut || "";
 
-      incrementUsage();
+      const u = getUsage();
+      u.count += 1;
+      saveUsage(u);
+      zeigeZaehler();
+
+      zeigeSchritt(6);
+
     } catch (e) {
-      showError("step2Error", "Verbindung fehlgeschlagen. Bitte versuch es nochmal.");
+      document.getElementById("fehler-5").textContent = "Verbindung fehlgeschlagen. Bitte versuch es nochmal.";
+      zeigeFehler("fehler-5");
     }
 
-    setLoading("step2Button", false, "Zeig mir meine Antwort 🫳🏻🎤");
+    btn.disabled = false;
+    btn.innerHTML = "Zeig mir meine Antwort 🫳🏻🎤";
   }
 
-  function copyText(elementId) {
-    const text = document.getElementById(elementId).textContent;
-    navigator.clipboard.writeText(text).then((e) => {
-      const btn = window.event ? window.event.target : null;
-      if (btn) {
-        const original = btn.textContent;
-        btn.textContent = "Kopiert";
-        setTimeout(() => { btn.textContent = original; }, 1500);
-      }
+  async function neuGenerieren() {
+    zeigeSchritt(5);
+    await generieren();
+  }
+
+  function kopieren() {
+    const text = document.getElementById("ergebnis-text").textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.querySelector(".kopier-btn");
+      const original = btn.textContent;
+      btn.textContent = "Kopiert ✓";
+      setTimeout(() => { btn.textContent = original; }, 1500);
     });
   }
 
-  renderCounter();
+  // Kanal-Auswahl fix
+  document.querySelectorAll(".auswahl-btn").forEach(btn => {
+    btn.addEventListener("click", function() {
+      const wert = this.dataset.wert;
+      if (wert === "whatsapp" || wert === "email" || wert === "kommentar") {
+        state.kanal = wert;
+      } else if (wert === "verbindend" || wert === "praezise") {
+        state.ton = wert;
+      }
+    });
+  });
+
+  zeigeZaehler();
 </script>
 
 </body>
