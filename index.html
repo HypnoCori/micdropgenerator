@@ -243,23 +243,46 @@
   }
 
   .upsell-box {
-    background: var(--ink);
-    color: #fff;
-    padding: 28px 24px;
+    border: 1.5px solid var(--ink-faint);
+    border-top: 3px solid var(--gold);
+    background: #fff;
+    padding: 36px 28px;
+    margin-top: 32px;
     margin-bottom: 24px;
     text-align: center;
   }
 
-  .upsell-box p {
-    font-size: 16px;
-    line-height: 1.7;
-    color: rgba(255,255,255,0.85);
-    margin-bottom: 20px;
+  .upsell-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 16px;
   }
 
-  .upsell-box strong {
-    color: var(--gold);
-    font-weight: 500;
+  .upsell-headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(26px, 5vw, 34px);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .upsell-headline em {
+    color: var(--petrol);
+    font-style: italic;
+  }
+
+  .upsell-text {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    max-width: 420px;
+    margin: 0 auto 28px;
   }
 
   .upsell-cta {
@@ -267,32 +290,33 @@
     background: var(--petrol);
     color: #fff;
     border: none;
-    padding: 14px 32px;
+    padding: 15px 36px;
     font-family: 'DM Sans', sans-serif;
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
     text-decoration: none;
     transition: background 0.15s ease;
+    letter-spacing: 0.02em;
   }
 
   .upsell-cta:hover { background: var(--petrol-deep); }
 
   .neu-btn {
     display: block;
-    margin: 0 auto;
+    margin: 20px auto 0;
     background: transparent;
-    border: 1.5px solid var(--petrol);
-    color: var(--petrol);
-    padding: 12px 24px;
+    border: 1.5px solid var(--ink-faint);
+    color: var(--ink-soft);
+    padding: 11px 22px;
     font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 400;
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
-  .neu-btn:hover { background: var(--petrol-tint); }
+  .neu-btn:hover { border-color: var(--petrol); color: var(--petrol); }
 
   .fehler {
     background: #fdf2f2;
@@ -426,15 +450,17 @@
       <button class="kopier-btn" onclick="kopieren()">Kopieren</button>
     </div>
 
+    <button class="neu-btn" onclick="neuGenerieren()">Antwort neu generieren</button>
+
     <div class="mut-box" id="mut-text"></div>
 
     <div class="upsell-box">
-      <p>Der Generator hat Dir gerade die Antwort gegeben. Aber warum war das überhaupt so schwer? Und wie wird es leichter, ohne dass Du jedes Mal ein Tool brauchst?</p>
-      <p><strong>Das erlebst Du in Regulate.</strong></p>
-      <a class="upsell-cta" href="REGULATE_LINK_HIER" target="_blank">Das will ich.</a>
+      <div class="upsell-eyebrow">Der nächste Schritt</div>
+      <p class="upsell-headline">Was wäre, wenn Dir das<br><em>immer</em> so leicht fiele?</p>
+      <p class="upsell-text">Nicht weil Du die richtigen Worte kennst. Sondern weil Dein Nervensystem gelernt hat, dass das hier sicher ist. Genau das erlebst Du in Regulate.</p>
+      <a class="upsell-cta" href="https://corinnaeichholz.thrivecart.com/regulate97/" target="_blank">Das will ich.</a>
     </div>
 
-    <button class="neu-btn" onclick="neuGenerieren()">Neu generieren</button>
   </div>
 
 </div>
