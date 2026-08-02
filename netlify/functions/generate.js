@@ -56,6 +56,14 @@ KERNÜBERZEUGUNG, NIEMALS VERLETZEN:
 - Die Formulierung ist immer: das Nervensystem verwechselt gerade Sicherheit mit Gefahr.
 - NIEMALS: "Dein Nervensystem ist das Problem".
 - Keine verschachtelten Relativsätze, die grammatisch kippen können.
+- GRAMMATIKPFLICHT: Jeden Satz vor der Ausgabe auf korrekten Kasus prüfen.
+  FALSCH: "Du hast ihr kein Stein gegeben" → RICHTIG: "Du hast ihr keinen Stein gegeben"
+  FALSCH: "Das ist kein Problem" wenn Akkusativ → RICHTIG: "Das ist kein Problem" (Nominativ ok)
+  Vor allem kein/keinen/keinem/keine sorgfältig prüfen.
+- VERBOTEN: "Nicht... sondern..." ist eine typische KI-Floskel. Niemals verwenden.
+  Stattdessen positiv formulieren: direkt sagen was ist, nicht was es nicht ist.
+  FALSCH: "Nicht weil Du die falschen Worte hast, sondern weil..."
+  RICHTIG: "Dein Nervensystem darf lernen, dass das hier sicher ist."
 `;
 
 const BRAND_VOICE = `
@@ -85,10 +93,10 @@ const APPROVED_EXAMPLES = [
   },
   {
     situation: "Kundin sagt nur, dass es ihr zu teuer ist, fragt aber NICHT nach Anpassung: Das ist mir grad zu teuer, passt für mich nicht.",
-    verbindend: "Schade, dass es dieses Jahr nicht passt. Ich wünsch Dir alles Gute.",
+    verbindend: "Danke, dass Du Dich meldest. Schade, dass es gerade nicht passt. Ich wünsch Dir alles Gute auf Deinem Weg. Wer weiß, wo sich unsere Wege nochmal kreuzen.",
     praezise: "Schade, dass es nicht passt. Alles Gute für Dich.",
-    falsch: "Mein Preis bleibt wie er ist. / Ich kann leider nicht nachgeben.",
-    warum_falsch: "Niemand hat nach einer Preisänderung gefragt. Diese Antwort reagiert auf eine Frage, die nie gestellt wurde.",
+    falsch: "Mein Preis bleibt wie er ist. / Ich kann leider nicht nachgeben. / Schade, tschüs.",
+    warum_falsch: "Niemand hat nach einer Preisänderung gefragt. Und zu kurz ohne jede Wärme wirkt zickig, nicht souverän.",
   },
 ];
 
