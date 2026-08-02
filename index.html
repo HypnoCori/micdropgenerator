@@ -5,313 +5,366 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Mic Drop Generator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800;1,700;1,800&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
     --petrol: #2e8896;
     --petrol-deep: #1f6b78;
-    --petrol-light: #C5E8EE;
-    --petrol-tint: #eef7f8;
+    --petrol-tint: #f4f9fa;
     --gold: #C8BA94;
     --gold-deep: #a89660;
-    --gold-pale: #faf6ed;
+    --gold-pale: #fbf9f4;
     --ink: #0B1D51;
-    --ink-mid: rgba(11,29,81,0.6);
-    --ink-soft: rgba(11,29,81,0.35);
-    --ink-faint: rgba(11,29,81,0.1);
-    --off-white: #FAFCFC;
+    --ink-mid: rgba(11,29,81,0.7);
+    --ink-soft: rgba(11,29,81,0.45);
+    --ink-faint: rgba(11,29,81,0.08);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--off-white);
+    background: transparent;
     color: var(--ink);
     font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    line-height: 1.7;
+    padding: 20px 10px;
     -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
   }
 
-  .wrap {
-    max-width: 600px;
+  .app-card {
+    max-width: 680px;
     margin: 0 auto;
-    padding: 48px 24px 80px;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid rgba(11,29,81,0.1);
+    box-shadow: 0 32px 64px rgba(11, 29, 81, 0.08), 0 4px 16px rgba(11, 29, 81, 0.02);
+    overflow: hidden;
   }
 
-  h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 400;
-    font-size: clamp(38px, 7vw, 58px);
-    line-height: 1.05;
+  .app-top-strip {
+    background: var(--petrol-tint);
+    padding: 12px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--ink-faint);
+  }
+
+  .badge-creator {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--petrol-deep);
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid rgba(46, 136, 150, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--petrol-deep);
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #10b981;
+  }
+
+  .app-hero-zone {
+    padding: 42px 32px 32px 32px;
+    text-align: center;
+    background: radial-gradient(100% 100% at 50% 0%, rgba(46, 136, 150, 0.04) 0%, rgba(255,255,255,1) 100%);
+    border-bottom: 1px solid var(--ink-faint);
+  }
+
+  .main-product-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
     color: var(--ink);
-    letter-spacing: -0.01em;
-    margin-bottom: 16px;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 14px;
   }
 
-  h1 em { color: var(--petrol); font-style: italic; }
-  h1 .mic { font-size: 0.6em; }
+  .main-product-title .highlight {
+    color: var(--petrol);
+    font-style: italic;
+    font-weight: 700;
+  }
 
-  .sub {
-    font-size: 19px;
-    font-weight: 400;
+  .slogan-badge {
+    display: inline-block;
+    background: var(--petrol-tint);
+    border: 1px solid rgba(46, 136, 150, 0.25);
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--petrol-deep);
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 8px rgba(46, 136, 150, 0.06);
+  }
+
+  .app-body { padding: 32px; }
+
+  .intro-text-left {
+    font-size: 14px;
     color: var(--ink-mid);
-    margin-bottom: 6px;
+    line-height: 1.55;
+    text-align: left;
+    margin-bottom: 24px;
   }
 
-  .intro {
-    font-size: 15px;
-    font-weight: 300;
-    color: var(--ink-soft);
-    margin-bottom: 36px;
+  .step-tag {
+    display: inline-block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--petrol);
+    background: rgba(46, 136, 150, 0.08);
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 14px;
   }
 
   .schritt { display: none; }
   .schritt.aktiv { display: block; }
 
-  .auswahl-label {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: 14px;
-  }
-
-  .auswahl-gruppe {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 32px;
-  }
-
-  .auswahl-btn {
-    padding: 12px 22px;
-    border: 1.5px solid var(--ink-faint);
-    background: #fff;
-    color: var(--ink-mid);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 400;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .auswahl-btn:hover { border-color: var(--petrol); color: var(--petrol); }
-  .auswahl-btn.gewaehlt { background: var(--petrol); border-color: var(--petrol); color: #fff; font-weight: 500; }
-
-  .frage-label {
-    display: block;
-    font-size: 20px;
-    font-weight: 400;
-    color: var(--ink);
-    margin-bottom: 12px;
-    line-height: 1.4;
-  }
-
-  .frage-hint {
-    font-size: 13px;
-    color: var(--ink-soft);
-    font-style: italic;
-    margin-bottom: 14px;
-  }
-
-  textarea {
-    width: 100%;
-    min-height: 100px;
-    padding: 14px;
-    border: 1.5px solid var(--ink-faint);
-    background: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    color: var(--ink);
-    resize: vertical;
-    line-height: 1.6;
-  }
-
-  textarea:focus { outline: none; border-color: var(--petrol); }
-
-  .checkbox-zeile {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-top: 20px;
-    padding: 16px;
-    background: var(--petrol-tint);
-    border: 1px solid var(--petrol-light);
-  }
-
-  .checkbox-zeile input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    margin-top: 3px;
-    flex-shrink: 0;
-    accent-color: var(--petrol);
-    cursor: pointer;
-  }
-
-  .checkbox-zeile label {
-    font-size: 13px;
-    color: var(--ink-mid);
-    line-height: 1.5;
-    cursor: pointer;
-  }
-
-  .weiter-btn {
-    display: inline-block;
-    background: var(--petrol);
-    color: #fff;
-    border: none;
-    padding: 14px 28px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background 0.15s ease;
-  }
-
-  .weiter-btn:hover { background: var(--petrol-deep); }
-  .weiter-btn:disabled { background: var(--ink-faint); cursor: not-allowed; color: var(--ink-soft); }
-
   .fortschritt {
     display: flex;
     gap: 6px;
-    margin-bottom: 36px;
+    margin-bottom: 28px;
   }
 
   .fort-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
+    height: 4px;
+    flex: 1;
+    border-radius: 2px;
     background: var(--ink-faint);
-    transition: background 0.2s ease;
+    transition: all 0.3s ease;
   }
 
   .fort-dot.aktiv { background: var(--petrol); }
   .fort-dot.fertig { background: var(--gold); }
 
-  .ergebnis-karte {
-    background: #fff;
-    border: 1.5px solid var(--ink-faint);
-    border-top: 3px solid var(--petrol);
-    padding: 28px 24px;
+  .auswahl-gruppe {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
     margin-bottom: 24px;
   }
 
-  .ergebnis-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+  .auswahl-btn {
+    padding: 12px 18px;
+    border: 1px solid var(--ink-faint);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--ink-mid);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .auswahl-btn:hover { border-color: var(--petrol); color: var(--petrol); background: var(--petrol-tint); }
+  .auswahl-btn.gewaehlt { background: var(--petrol); border-color: var(--petrol); color: #fff; box-shadow: 0 4px 12px rgba(46, 136, 150, 0.25); }
+
+  .frage-label {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .frage-hint {
+    font-size: 13px;
     color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 110px;
+    padding: 14px;
+    border: 1px solid rgba(11,29,81,0.15);
+    border-radius: 10px;
+    background: #fafafa;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    resize: vertical;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+    transition: all 0.2s ease;
+  }
+
+  textarea:focus { outline: none; border-color: var(--petrol); background: #ffffff; box-shadow: 0 0 0 3px rgba(46, 136, 150, 0.15); }
+
+  .weiter-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 24px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.2s ease;
+  }
+
+  .weiter-btn:hover { background: var(--petrol); transform: translateY(-1px); }
+  .weiter-btn:disabled { background: var(--ink-faint); cursor: not-allowed; color: var(--ink-soft); transform: none; }
+
+  .checkbox-gruppe {
+    margin-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .checkbox-zeile {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--ink-mid);
+    line-height: 1.4;
+  }
+
+  .checkbox-zeile input { margin-top: 2px; accent-color: var(--petrol); }
+
+  .ergebnis-karte {
+    background: #ffffff;
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    padding: 24px;
     margin-bottom: 16px;
+    box-shadow: 0 6px 20px rgba(200, 186, 148, 0.15);
+  }
+
+  .ergebnis-label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    margin-bottom: 12px;
   }
 
   .ergebnis-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    line-height: 1.5;
+    font-size: 16px;
+    line-height: 1.65;
     color: var(--ink);
+    white-space: pre-wrap;
     margin-bottom: 20px;
   }
 
   .kopier-btn {
-    background: transparent;
-    border: 1px solid var(--ink-faint);
-    color: var(--ink-mid);
-    padding: 8px 16px;
-    font-family: 'DM Sans', sans-serif;
+    background: var(--gold-pale);
+    border: 1px solid var(--gold);
+    color: var(--gold-deep);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
   }
 
-  .kopier-btn:hover { border-color: var(--petrol); color: var(--petrol); }
+  .kopier-btn:hover { background: var(--gold); color: #fff; }
 
   .mut-box {
-    font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: 19px;
-    line-height: 1.5;
+    font-size: 14px;
     color: var(--ink);
-    background: var(--gold-pale);
-    border-left: 2px solid var(--gold);
-    padding: 18px 22px;
+    background: var(--petrol-tint);
+    border-left: 3px solid var(--petrol);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
     margin-bottom: 24px;
   }
 
-  .upsell-box {
-    border: 1.5px solid var(--ink-faint);
-    border-top: 3px solid var(--gold);
-    background: #fff;
-    padding: 36px 28px;
-    margin-top: 32px;
-    margin-bottom: 24px;
-    text-align: center;
+  .upsell-card {
+    background: #ffffff;
+    border: 1.5px solid var(--petrol);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 12px 28px rgba(46, 136, 150, 0.1);
   }
 
-  .upsell-eyebrow {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--gold-deep);
-    margin-bottom: 16px;
-  }
-
-  .upsell-headline {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(26px, 5vw, 34px);
-    font-weight: 400;
-    line-height: 1.2;
+  .upsell-header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
     color: var(--ink);
-    margin-bottom: 16px;
-  }
-
-  .upsell-headline em {
-    color: var(--petrol);
-    font-style: italic;
+    margin-bottom: 12px;
+    line-height: 1.3;
   }
 
   .upsell-text {
-    font-size: 15px;
-    font-weight: 300;
+    font-size: 14px;
     color: var(--ink-mid);
-    line-height: 1.7;
-    max-width: 420px;
-    margin: 0 auto 28px;
+    line-height: 1.6;
+    margin-bottom: 18px;
   }
 
-  .upsell-cta {
-    display: inline-block;
+  .upsell-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
     background: var(--petrol);
-    color: #fff;
-    border: none;
-    padding: 15px 36px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
+    color: #ffffff;
     text-decoration: none;
-    transition: background 0.15s ease;
-    letter-spacing: 0.02em;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(46, 136, 150, 0.25);
   }
 
-  .upsell-cta:hover { background: var(--petrol-deep); }
+  .upsell-cta-btn:hover { background: var(--petrol-deep); transform: translateY(-1px); }
 
   .neu-btn {
-    display: block;
-    margin: 20px auto 0;
+    width: 100%;
     background: transparent;
-    border: 1.5px solid var(--ink-faint);
+    border: 1px solid var(--ink-faint);
+    border-radius: 8px;
     color: var(--ink-soft);
-    padding: 11px 22px;
-    font-family: 'DM Sans', sans-serif;
+    padding: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 13px;
-    font-weight: 400;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
   }
@@ -320,28 +373,16 @@
 
   .fehler {
     background: #fdf2f2;
-    border-left: 2px solid #c0392b;
-    padding: 12px 16px;
-    font-size: 14px;
+    border-left: 3px solid #c0392b;
+    padding: 10px 14px;
+    font-size: 13px;
     color: #8c2e22;
-    margin-top: 12px;
+    margin-top: 10px;
     display: none;
+    border-radius: 4px;
   }
 
   .fehler.sichtbar { display: block; }
-
-  .zaehler-badge {
-    position: fixed;
-    bottom: 16px;
-    right: 16px;
-    font-size: 11px;
-    color: var(--ink-soft);
-    background: rgba(255,255,255,0.9);
-    border: 1px solid var(--ink-faint);
-    padding: 5px 10px;
-    font-family: 'DM Sans', sans-serif;
-    z-index: 10;
-  }
 
   .spinner {
     display: inline-block;
@@ -356,156 +397,168 @@
   }
 
   @keyframes spin { to { transform: rotate(360deg); } }
-  .hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<div class="wrap">
+<div class="app-card">
 
-  <h1>The Mic Drop<br><em>Generator</em> <span class="mic">🫳🏻🎤</span></h1>
-  <p class="sub" id="subText">Deine schlagfertigste Version, auf Knopfdruck.</p>
-  <p class="intro" id="introText">Beantworte kurz ein paar Fragen. Du bekommst sofort eine souveräne Antwort, die wirklich nach Dir klingt.</p>
-
-  <div class="fortschritt" id="fortschritt">
-    <div class="fort-dot aktiv" id="dot-0"></div>
-    <div class="fort-dot" id="dot-1"></div>
-    <div class="fort-dot" id="dot-2"></div>
-    <div class="fort-dot" id="dot-3"></div>
-    <div class="fort-dot" id="dot-4"></div>
-    <div class="fort-dot" id="dot-5"></div>
-  </div>
-
-  <!-- SCHRITT 0: Kanal -->
-  <div class="schritt aktiv" id="schritt-0">
-    <div class="auswahl-label">Wo kam die Nachricht an?</div>
-    <div class="auswahl-gruppe">
-      <button class="auswahl-btn" data-wert="whatsapp" onclick="waehle('kanal', this)">WhatsApp / DM</button>
-      <button class="auswahl-btn" data-wert="email" onclick="waehle('kanal', this)">E-Mail</button>
-      <button class="auswahl-btn" data-wert="kommentar" onclick="waehle('kommentar', this)">Kommentar / öffentlich</button>
+  <div class="app-top-strip">
+    <div class="badge-creator">Corinna Eichholz</div>
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      <span id="zaehler">30 / 30 Credits</span>
     </div>
-    <div class="fehler" id="fehler-0">Bitte wähle einen Kanal aus.</div>
-    <button class="weiter-btn" onclick="naechsterSchritt(0)">Weiter</button>
   </div>
 
-  <!-- SCHRITT 1: Ton -->
-  <div class="schritt" id="schritt-1">
-    <div class="auswahl-label">Wie soll die Antwort klingen?</div>
-    <div class="auswahl-gruppe">
-      <button class="auswahl-btn" data-wert="verbindend" onclick="waehle('ton', this)">Verbindend</button>
-      <button class="auswahl-btn" data-wert="praezise" onclick="waehle('ton', this)">Präzise</button>
-    </div>
-    <div class="fehler" id="fehler-1">Bitte wähle einen Ton aus.</div>
-    <button class="weiter-btn" onclick="naechsterSchritt(1)">Weiter</button>
+  <div class="app-hero-zone">
+    <h1 class="main-product-title">The Mic Drop <span class="highlight">Generator</span> 🫳🏻🎤</h1>
+    <div class="slogan-badge">Klartext auf Knopfdruck</div>
   </div>
 
-  <!-- SCHRITT 2: Situation -->
-  <div class="schritt" id="schritt-2">
-    <div class="frage-hint">Am besten kopiere die Nachricht eins zu eins, so wie Du sie bekommen hast.</div>
-    <textarea id="situation" placeholder="Zum Beispiel: Meine Kundin hat mir geschrieben..."></textarea>
-    <div class="fehler" id="fehler-2">Bitte schreib, was Dir geschrieben wurde.</div>
-    <button class="weiter-btn" id="weiter-2" onclick="naechsterSchritt(2)">Weiter</button>
-  </div>
+  <div class="app-body">
 
-  <!-- SCHRITT 3: Was geht in Dir vor -->
-  <div class="schritt" id="schritt-3">
-    <div class="frage-hint">Was fühlst Du? Wütend? Unsicher? Verletzt? Schreib einfach frei, was grade da ist. Je echter, desto besser kann ich eine Antwort generieren, die wirklich zu Dir passt.</div>
-    <textarea id="thought" placeholder="Zum Beispiel: Ich bin wütend, ich spüre Enge in der Brust..."></textarea>
-    <div class="fehler" id="fehler-3">Schreib kurz, was in Dir vorgeht.</div>
-    <button class="weiter-btn" onclick="naechsterSchritt(3)">Weiter</button>
-  </div>
+    <p class="intro-text-left" id="introText">Beantworte kurz ein paar Fragen. Du bekommst sofort eine souveräne Antwort, die wirklich nach Dir klingt.</p>
 
-  <!-- SCHRITT 4: Wunschantwort -->
-  <div class="schritt" id="schritt-4">
-    <div class="frage-hint">Wenn Du jetzt einfach rausschreiben könntest, was Du denkst, ohne Konsequenzen zu befürchten, was würdest Du dieser Person sagen?</div>
-    <textarea id="wunsch" placeholder="Schreib einfach drauf los."></textarea>
-    <div class="fehler" id="fehler-4">Schreib kurz, was Du eigentlich antworten würdest.</div>
-    <button class="weiter-btn" onclick="naechsterSchritt(4)">Weiter</button>
-  </div>
-
-  <!-- SCHRITT 5: Vision + Checkboxen -->
-  <div class="schritt" id="schritt-5">
-    <label class="frage-label" for="vision">Was würde sich für Dich und in Deinem Business verändern, wenn Du in solchen Momenten einfach souverän antworten könntest?</label>
-    <textarea id="vision" placeholder="Zum Beispiel: Ich würde endlich meinen Preis halten. Ich würde aufhören, mich klein zu machen..."></textarea>
-
-    <div class="checkbox-zeile" style="margin-top: 24px;">
-      <input type="checkbox" id="zustimmung-ki" required>
-      <label for="zustimmung-ki">Ich bin damit einverstanden, dass meine Eingaben zur Generierung meiner persönlichen Antwort an einen KI-Dienst übermittelt werden.</label>
+    <div class="fortschritt">
+      <div class="fort-dot aktiv" id="dot-0"></div>
+      <div class="fort-dot" id="dot-1"></div>
+      <div class="fort-dot" id="dot-2"></div>
+      <div class="fort-dot" id="dot-3"></div>
+      <div class="fort-dot" id="dot-4"></div>
+      <div class="fort-dot" id="dot-5"></div>
     </div>
 
-    <div class="checkbox-zeile">
-      <input type="checkbox" id="zustimmung-content">
-      <label for="zustimmung-content">Ich bin damit einverstanden, dass meine anonymisierten Antworten von Corinna Eichholz für Marketing- und Contentzwecke genutzt werden dürfen.</label>
+    <!-- SCHRITT 0 -->
+    <div class="schritt aktiv" id="schritt-0">
+      <span class="step-tag">SCHRITT 01 / KANAL</span>
+      <label class="frage-label">Wo kam die Nachricht an?</label>
+      <div class="auswahl-gruppe">
+        <button class="auswahl-btn" data-wert="whatsapp" onclick="waehle('kanal', this)">WhatsApp / DM</button>
+        <button class="auswahl-btn" data-wert="email" onclick="waehle('kanal', this)">E-Mail</button>
+        <button class="auswahl-btn" data-wert="kommentar" onclick="waehle('kanal', this)">Öffentlicher Kommentar</button>
+      </div>
+      <div class="fehler" id="fehler-0">Bitte wähle einen Kanal aus.</div>
+      <button class="weiter-btn" onclick="naechsterSchritt(0)">Weiter zu Schritt 2 →</button>
     </div>
 
-    <div class="fehler" id="fehler-5">Bitte stimme der Verarbeitung Deiner Daten zu, um fortzufahren.</div>
-    <button class="weiter-btn" id="generier-btn" onclick="generieren()">Zeig mir meine Antwort 🫳🏻🎤</button>
+    <!-- SCHRITT 1 -->
+    <div class="schritt" id="schritt-1">
+      <span class="step-tag">SCHRITT 02 / TONFALL</span>
+      <label class="frage-label">Wie soll die Antwort klingen?</label>
+      <div class="auswahl-gruppe">
+        <button class="auswahl-btn" data-wert="verbindend" onclick="waehle('ton', this)">Verbindend & Wertschätzend</button>
+        <button class="auswahl-btn" data-wert="praezise" onclick="waehle('ton', this)">Präzise & Direkt</button>
+      </div>
+      <div class="fehler" id="fehler-1">Bitte wähle einen Tonfall aus.</div>
+      <button class="weiter-btn" onclick="naechsterSchritt(1)">Weiter zu Schritt 3 →</button>
+    </div>
+
+    <!-- SCHRITT 2 -->
+    <div class="schritt" id="schritt-2">
+      <span class="step-tag">SCHRITT 03 / EINGABE</span>
+      <label class="frage-label">Was wurde Dir genau geschrieben?</label>
+      <div class="frage-hint">Am besten kopiere die Nachricht eins zu eins, so wie Du sie bekommen hast.</div>
+      <textarea id="situation" placeholder="z. B. 'Kann man am Preis noch was machen?'"></textarea>
+      <div class="fehler" id="fehler-2">Bitte schreib, was Dir geschrieben wurde.</div>
+      <button class="weiter-btn" id="weiter-2" onclick="naechsterSchritt(2)">Weiter zu Schritt 4 →</button>
+    </div>
+
+    <!-- SCHRITT 3 -->
+    <div class="schritt" id="schritt-3">
+      <span class="step-tag">SCHRITT 04 / EMOTION</span>
+      <label class="frage-label">Was geht gerade in Dir vor?</label>
+      <div class="frage-hint">Was fühlst Du? Wütend? Unsicher? Verletzt? Schreib einfach frei, was grade da ist. Je echter, desto besser wird die Antwort.</div>
+      <textarea id="thought" placeholder="z. B. Ich bin wütend, ich spüre Enge in der Brust..."></textarea>
+      <div class="fehler" id="fehler-3">Schreib kurz, was in Dir vorgeht.</div>
+      <button class="weiter-btn" onclick="naechsterSchritt(3)">Weiter zu Schritt 5 →</button>
+    </div>
+
+    <!-- SCHRITT 4 -->
+    <div class="schritt" id="schritt-4">
+      <span class="step-tag">SCHRITT 05 / POSITION</span>
+      <label class="frage-label">Was würdest Du eigentlich sagen?</label>
+      <div class="frage-hint">Wenn Du jetzt einfach rausschreiben könntest, was Du denkst, ohne Konsequenzen zu befürchten, was würdest Du dieser Person sagen?</div>
+      <textarea id="wunsch" placeholder="Schreib einfach drauf los."></textarea>
+      <div class="fehler" id="fehler-4">Schreib kurz, was Du eigentlich antworten würdest.</div>
+      <button class="weiter-btn" onclick="naechsterSchritt(4)">Weiter zum Ziel →</button>
+    </div>
+
+    <!-- SCHRITT 5 -->
+    <div class="schritt" id="schritt-5">
+      <span class="step-tag">SCHRITT 06 / GENERIERUNG</span>
+      <label class="frage-label" for="vision">Was würde sich für Dich und in Deinem Business verändern, wenn Du in solchen Momenten einfach souverän antworten könntest?</label>
+      <textarea id="vision" placeholder="Zum Beispiel: Ich würde endlich meinen Preis halten. Ich würde aufhören, mich klein zu machen..."></textarea>
+
+      <div class="checkbox-gruppe">
+        <div class="checkbox-zeile">
+          <input type="checkbox" id="zustimmung-ki" required>
+          <label for="zustimmung-ki">Ich bin damit einverstanden, dass meine Eingaben zur Generierung meiner persönlichen Antwort an einen KI-Dienst übermittelt werden.</label>
+        </div>
+        <div class="checkbox-zeile">
+          <input type="checkbox" id="zustimmung-content">
+          <label for="zustimmung-content">Ich bin damit einverstanden, dass meine anonymisierten Antworten von Corinna Eichholz für Marketing- und Contentzwecke genutzt werden dürfen.</label>
+        </div>
+      </div>
+
+      <div class="fehler" id="fehler-5">Bitte stimme der Verarbeitung Deiner Daten zu, um fortzufahren.</div>
+      <button class="weiter-btn" id="generier-btn" onclick="generieren()" style="background: var(--petrol);">Zeig mir meine Antwort 🫳🏻🎤</button>
+    </div>
+
+    <!-- ERGEBNIS -->
+    <div class="schritt" id="schritt-ergebnis">
+      <div class="ergebnis-karte">
+        <div class="ergebnis-label" id="ergebnis-label">Deine Antwort</div>
+        <div class="ergebnis-text" id="ergebnis-text"></div>
+        <button class="kopier-btn" onclick="kopieren()">Kopieren 📋</button>
+      </div>
+
+      <div class="mut-box" id="mut-text"></div>
+
+      <div class="upsell-card">
+        <div class="upsell-header" id="upsell-header"></div>
+        <div class="upsell-text" id="upsell-body"></div>
+        <a href="https://corinnaeichholz.thrivecart.com/regulate97/" class="upsell-cta-btn" id="upsell-cta" target="_blank"></a>
+      </div>
+
+      <button class="neu-btn" onclick="neuGenerieren()">+ Antwort neu generieren</button>
+    </div>
+
   </div>
-
-  <!-- ERGEBNIS -->
-  <div class="schritt" id="schritt-ergebnis">
-    <div class="ergebnis-karte">
-      <div class="ergebnis-label" id="ergebnis-label">Deine Antwort</div>
-      <div class="ergebnis-text" id="ergebnis-text"></div>
-      <button class="kopier-btn" onclick="kopieren()">Kopieren</button>
-    </div>
-
-    <button class="neu-btn" onclick="neuGenerieren()">Antwort neu generieren</button>
-
-    <div class="mut-box" id="mut-text"></div>
-
-    <div class="upsell-box">
-      <div class="upsell-eyebrow">Der nächste Schritt</div>
-      <p class="upsell-headline">Was wäre, wenn Dir das<br><em>immer</em> so leicht fiele?</p>
-      <p class="upsell-text">Nicht weil Du die richtigen Worte kennst. Sondern weil Dein Nervensystem gelernt hat, dass das hier sicher ist. Genau das erlebst Du in Regulate.</p>
-      <a class="upsell-cta" href="https://corinnaeichholz.thrivecart.com/regulate97/" target="_blank">Das will ich.</a>
-    </div>
-
-  </div>
-
 </div>
-
-<div class="zaehler-badge" id="zaehler"></div>
 
 <script>
   const FUNCTION_URL = "/.netlify/functions/generate";
   const MONTHLY_LIMIT = 30;
   const STORAGE_KEY = "micdrop_v3";
 
-  let state = {
-    schritt: 0,
-    kanal: null,
-    ton: null,
-    situation: "",
-    thought: "",
-    wunsch: "",
-    vision: "",
-    lawId: 2,
-  };
-
-  const HEADER = [
-    { sub: "Deine schlagfertigste Version, auf Knopfdruck.", intro: "Beantworte kurz ein paar Fragen. Du bekommst sofort eine souveräne Antwort, die wirklich nach Dir klingt." },
-    { sub: "Wie soll Deine Antwort klingen?", intro: "Wähle den Ton, der zu dieser Situation passt." },
-    { sub: "Was wurde Dir geschrieben?", intro: "Kopiere die Nachricht am besten eins zu eins." },
-    { sub: "Was geht gerade in Dir vor?", intro: "Je ehrlicher Du hier bist, desto besser wird die Antwort." },
-    { sub: "Was würdest Du eigentlich sagen?", intro: "Deine echte Position ist die Grundlage für alles, was jetzt kommt." },
-    { sub: "Letzte Frage, dann bekommst Du Deine Antwort.", intro: "" },
-    { sub: "Hier ist Dein Mic Drop 🫳🏻🎤", intro: "Wähl die Version, die sich richtig anfühlt, oder generier eine neue." },
+  const upsellVarianten = [
+    {
+      header: "Die Antwort steht. Aber wie fühlt sich Dein Körper gerade an?",
+      text: "Der Generator nimmt Dir den Kopfstress beim Antworten ab. Wenn Du spürst, dass die Anspannung in solchen Momenten trotzdem tief sitzt, ist Regulate Deine Abkürzung.",
+      cta: "Ja, ich will die Anspannung im Körper auflösen →"
+    },
+    {
+      header: "Souverän getippt. Aber wie steht es um Dein Nervensystem?",
+      text: "Klartext senden ist der erste Schritt. Damit sich solche Nachrichten auch innerlich nicht mehr nach Gefahr anfühlen, hilft Dir Regulate.",
+      cta: "Ja, ich will echte innere Ruhe spüren →"
+    },
+    {
+      header: "Grenze gesetzt. Lässt Dein System die Anspannung schon los?",
+      text: "Die richtigen Worte zu haben befreit. Mit Regulate lernst Du, klare Grenzen zu setzen, ohne danach stundenlang körperlich damit beschäftigt zu sein.",
+      cta: "Ja, ich will Grenzen ohne Körperstress setzen →"
+    }
   ];
 
-  function aktualisiereHeader(index) {
-    const h = HEADER[Math.min(index, HEADER.length - 1)];
-    document.getElementById("subText").textContent = h.sub;
-    document.getElementById("introText").textContent = h.intro;
-  }
+  let state = {
+    schritt: 0, kanal: null, ton: null,
+    situation: "", thought: "", wunsch: "", vision: "", lawId: 2,
+  };
 
   function aktualisiereFortschritt(aktiv) {
     for (let i = 0; i < 6; i++) {
       const dot = document.getElementById("dot-" + i);
-      if (!dot) continue;
-      if (i < aktiv) dot.className = "fort-dot fertig";
-      else if (i === aktiv) dot.className = "fort-dot aktiv";
-      else dot.className = "fort-dot";
+      if (dot) dot.className = i < aktiv ? "fort-dot fertig" : (i === aktiv ? "fort-dot aktiv" : "fort-dot");
     }
   }
 
@@ -514,53 +567,30 @@
     const ziel = document.getElementById(n === 6 ? "schritt-ergebnis" : "schritt-" + n);
     if (ziel) ziel.classList.add("aktiv");
     state.schritt = n;
-    aktualisiereHeader(n);
     aktualisiereFortschritt(Math.min(n, 5));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function waehle(typ, btn) {
-    const gruppe = btn.closest(".auswahl-gruppe");
-    gruppe.querySelectorAll(".auswahl-btn").forEach(b => b.classList.remove("gewaehlt"));
+    btn.closest(".auswahl-gruppe").querySelectorAll(".auswahl-btn").forEach(b => b.classList.remove("gewaehlt"));
     btn.classList.add("gewaehlt");
-    if (typ === "kanal" || btn.dataset.wert === "whatsapp" || btn.dataset.wert === "email") {
-      state.kanal = btn.dataset.wert;
-    } else if (btn.dataset.wert === "verbindend" || btn.dataset.wert === "praezise") {
-      state.ton = btn.dataset.wert;
-    } else {
-      state.kanal = btn.dataset.wert;
-    }
+    if (typ === "kanal") state.kanal = btn.dataset.wert;
+    if (typ === "ton") state.ton = btn.dataset.wert;
   }
 
-  function zeigeFehler(id) {
-    document.getElementById(id).classList.add("sichtbar");
-  }
-
-  function versteckeFehler(id) {
-    document.getElementById(id).classList.remove("sichtbar");
-  }
+  function zeigeFehler(id) { document.getElementById(id).classList.add("sichtbar"); }
+  function versteckeFehler(id) { document.getElementById(id).classList.remove("sichtbar"); }
 
   async function naechsterSchritt(aktuell) {
     versteckeFehler("fehler-" + aktuell);
-
-    if (aktuell === 0) {
-      if (!state.kanal) { zeigeFehler("fehler-0"); return; }
-      zeigeSchritt(1); return;
-    }
-
-    if (aktuell === 1) {
-      if (!state.ton) { zeigeFehler("fehler-1"); return; }
-      zeigeSchritt(2); return;
-    }
-
+    if (aktuell === 0 && !state.kanal) { zeigeFehler("fehler-0"); return; }
+    if (aktuell === 1 && !state.ton) { zeigeFehler("fehler-1"); return; }
     if (aktuell === 2) {
       state.situation = document.getElementById("situation").value.trim();
       if (state.situation.length < 3) { zeigeFehler("fehler-2"); return; }
-
       const btn = document.getElementById("weiter-2");
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Einen Moment...';
-
       try {
         const res = await fetch(FUNCTION_URL, {
           method: "POST",
@@ -570,23 +600,19 @@
         const data = await res.json();
         state.lawId = data.lawId || 2;
       } catch (e) { state.lawId = 2; }
-
       btn.disabled = false;
-      btn.textContent = "Weiter";
+      btn.textContent = "Weiter zu Schritt 4 →";
       zeigeSchritt(3); return;
     }
-
     if (aktuell === 3) {
       state.thought = document.getElementById("thought").value.trim();
       if (state.thought.length < 2) { zeigeFehler("fehler-3"); return; }
-      zeigeSchritt(4); return;
     }
-
     if (aktuell === 4) {
       state.wunsch = document.getElementById("wunsch").value.trim();
       if (state.wunsch.length < 2) { zeigeFehler("fehler-4"); return; }
-      zeigeSchritt(5); return;
     }
+    zeigeSchritt(aktuell + 1);
   }
 
   function getUsage() {
@@ -594,37 +620,35 @@
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return { month: aktuellerMonat(), count: 0 };
       const p = JSON.parse(raw);
-      if (p.month !== aktuellerMonat()) return { month: aktuellerMonat(), count: 0 };
-      return p;
+      return p.month !== aktuellerMonat() ? { month: aktuellerMonat(), count: 0 } : p;
     } catch (e) { return { month: aktuellerMonat(), count: 0 }; }
   }
 
-  function aktuellerMonat() {
-    const d = new Date();
-    return `${d.getFullYear()}-${d.getMonth() + 1}`;
-  }
-
+  function aktuellerMonat() { const d = new Date(); return `${d.getFullYear()}-${d.getMonth() + 1}`; }
   function saveUsage(u) { localStorage.setItem(STORAGE_KEY, JSON.stringify(u)); }
 
   function zeigeZaehler() {
     const u = getUsage();
     const rest = Math.max(0, MONTHLY_LIMIT - u.count);
-    document.getElementById("zaehler").textContent = `${rest}/${MONTHLY_LIMIT} diesen Monat`;
+    document.getElementById("zaehler").textContent = `${rest} / ${MONTHLY_LIMIT} Credits`;
     return rest;
+  }
+
+  function setzeZufallsUpsell() {
+    const v = upsellVarianten[Math.floor(Math.random() * upsellVarianten.length)];
+    document.getElementById("upsell-header").textContent = v.header;
+    document.getElementById("upsell-body").textContent = v.text;
+    document.getElementById("upsell-cta").textContent = v.cta;
   }
 
   async function generieren() {
     versteckeFehler("fehler-5");
-
-    const zustimmungKI = document.getElementById("zustimmung-ki").checked;
-    if (!zustimmungKI) { zeigeFehler("fehler-5"); return; }
-
+    if (!document.getElementById("zustimmung-ki").checked) { zeigeFehler("fehler-5"); return; }
     state.vision = document.getElementById("vision").value.trim();
 
     if (zeigeZaehler() <= 0) {
       document.getElementById("fehler-5").textContent = "Du hast Deine 30 Anfragen für diesen Monat aufgebraucht.";
-      zeigeFehler("fehler-5");
-      return;
+      zeigeFehler("fehler-5"); return;
     }
 
     const btn = document.getElementById("generier-btn");
@@ -648,7 +672,6 @@
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         document.getElementById("fehler-5").textContent = data.error || "Ein Fehler ist aufgetreten.";
         zeigeFehler("fehler-5");
@@ -658,16 +681,17 @@
       }
 
       const kanalLabel = state.kanal === "whatsapp" ? "WhatsApp" : state.kanal === "email" ? "E-Mail" : "Kommentar";
-      const tonLabel = state.ton === "verbindend" ? "Verbindend" : "Präzise";
+      const tonLabel = state.ton === "verbindend" ? "Verbindend & Wertschätzend" : "Präzise & Direkt";
       document.getElementById("ergebnis-label").textContent = `${tonLabel} · ${kanalLabel}`;
       document.getElementById("ergebnis-text").textContent = data.antwort || "";
       document.getElementById("mut-text").textContent = data.mut || "";
+
+      setzeZufallsUpsell();
 
       const u = getUsage();
       u.count += 1;
       saveUsage(u);
       zeigeZaehler();
-
       zeigeSchritt(6);
 
     } catch (e) {
@@ -685,26 +709,13 @@
   }
 
   function kopieren() {
-    const text = document.getElementById("ergebnis-text").textContent;
-    navigator.clipboard.writeText(text).then(() => {
+    navigator.clipboard.writeText(document.getElementById("ergebnis-text").textContent).then(() => {
       const btn = document.querySelector(".kopier-btn");
       const original = btn.textContent;
       btn.textContent = "Kopiert ✓";
       setTimeout(() => { btn.textContent = original; }, 1500);
     });
   }
-
-  // Kanal-Auswahl fix
-  document.querySelectorAll(".auswahl-btn").forEach(btn => {
-    btn.addEventListener("click", function() {
-      const wert = this.dataset.wert;
-      if (wert === "whatsapp" || wert === "email" || wert === "kommentar") {
-        state.kanal = wert;
-      } else if (wert === "verbindend" || wert === "praezise") {
-        state.ton = wert;
-      }
-    });
-  });
 
   zeigeZaehler();
 </script>
