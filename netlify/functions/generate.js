@@ -167,6 +167,16 @@ function removeEmDashes(text) {
     .replace(/[–—]/g, ".");
 }
 
+function removeNichtSondern(text) {
+  if (!text) return text;
+  // "Nicht X, sondern Y" → nur "Y" übrig, mit großem Anfangsbuchstaben
+  return text
+    .replace(/[Nn]icht\s+[^,\.]{1,80},?\s+sondern\s+([a-zäöüßA-ZÄÖÜ])/g,
+      (_, ersterBuchstabe) => ersterBuchstabe.toUpperCase())
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 exports.handler = async function (event) {
   if (event.httpMethod === "OPTIONS") {
     return { statusCode: 200, headers: corsHeaders(), body: "" };
@@ -276,7 +286,9 @@ Was sich verändern würde, wenn ihr das leicht fällt: ${vision || "(nicht ange
       if (!parsed.mut) parsed.mut = "Du darfst für Dich einstehen. Genau jetzt.";
 
       parsed.antwort = removeEmDashes(parsed.antwort);
+      parsed.antwort = removeNichtSondern(parsed.antwort);
       parsed.mut = removeEmDashes(parsed.mut);
+      parsed.mut = removeNichtSondern(parsed.mut);
 
       // Sicherheitsnetz: Im mut-Text immer Du/Dein/Dich/Dir großschreiben
       // (Corinnas Markenstimme, unabhängig vom Schreibstil der Nutzerin)
