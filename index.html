@@ -117,6 +117,32 @@
     box-shadow: 0 2px 8px rgba(46, 136, 150, 0.06);
   }
 
+  .hero-subtitle-b {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+  .hero-subtitle-b::before {
+    content: "";
+    width: 36px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold-deep));
+  }
+  .hero-subtitle-b::after {
+    content: "";
+    width: 36px;
+    height: 2px;
+    background: linear-gradient(to left, transparent, var(--gold-deep));
+  }
+
   .app-body { padding: 32px; }
 
   .intro-text-left {
@@ -404,7 +430,7 @@
 <div class="app-card">
 
   <div class="app-top-strip">
-    <div class="badge-creator">Corinna Eichholz</div>
+    <div class="badge-creator">Entwickelt von Corinna Eichholz</div>
     <div class="status-badge">
       <span class="status-dot"></span>
       <span id="zaehler">30 / 30 Credits</span>
@@ -412,7 +438,7 @@
   </div>
 
   <div class="app-hero-zone">
-    <h1 class="main-product-title">The Mic Drop <span class="highlight">Generator</span></h1>
+    <h1 class="main-product-title">The Mic Drop <span class="highlight">Generator</span> 🎙️</h1>
     <div class="slogan-badge">Klartext auf Knopfdruck</div>
   </div>
 
