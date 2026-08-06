@@ -423,6 +423,22 @@
   }
 
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  .zurueck-btn {
+    display: block;
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    padding: 0;
+    text-align: left;
+  }
+
+  .zurueck-btn:hover { color: var(--petrol); }
 </style>
 </head>
 <body>
@@ -478,6 +494,7 @@
       </div>
       <div class="fehler" id="fehler-1">Bitte wähle einen Tonfall aus.</div>
       <button class="weiter-btn" onclick="naechsterSchritt(1)">Weiter zu Schritt 3 →</button>
+      <button class="zurueck-btn" onclick="zeigeSchritt(0)">← Zurück</button>
     </div>
 
     <!-- SCHRITT 2 -->
@@ -488,6 +505,7 @@
       <textarea id="situation" placeholder="z. B. 'Kann man am Preis noch was machen?'"></textarea>
       <div class="fehler" id="fehler-2">Bitte schreib, was Dir geschrieben wurde.</div>
       <button class="weiter-btn" id="weiter-2" onclick="naechsterSchritt(2)">Weiter zu Schritt 4 →</button>
+      <button class="zurueck-btn" onclick="zeigeSchritt(1)">← Zurück</button>
     </div>
 
     <!-- SCHRITT 3 -->
@@ -498,6 +516,7 @@
       <textarea id="thought" placeholder="z. B. Ich bin wütend, ich spüre Enge in der Brust..."></textarea>
       <div class="fehler" id="fehler-3">Schreib kurz, was in Dir vorgeht.</div>
       <button class="weiter-btn" onclick="naechsterSchritt(3)">Weiter zu Schritt 5 →</button>
+      <button class="zurueck-btn" onclick="zeigeSchritt(2)">← Zurück</button>
     </div>
 
     <!-- SCHRITT 4 -->
@@ -508,6 +527,7 @@
       <textarea id="wunsch" placeholder="Schreib einfach drauf los."></textarea>
       <div class="fehler" id="fehler-4">Schreib kurz, was Du eigentlich antworten würdest.</div>
       <button class="weiter-btn" onclick="naechsterSchritt(4)">Weiter zum Ziel →</button>
+      <button class="zurueck-btn" onclick="zeigeSchritt(3)">← Zurück</button>
     </div>
 
     <!-- SCHRITT 5 -->
@@ -529,6 +549,7 @@
 
       <div class="fehler" id="fehler-5">Bitte stimme der Verarbeitung Deiner Daten zu, um fortzufahren.</div>
       <button class="weiter-btn" id="generier-btn" onclick="generieren()" style="background: var(--petrol);">Zeig mir meine Antwort 🫳🏻🎤</button>
+      <button class="zurueck-btn" onclick="zeigeSchritt(4)">← Zurück</button>
     </div>
 
     <!-- ERGEBNIS -->
