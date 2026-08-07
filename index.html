@@ -607,18 +607,6 @@
         <button class="kopier-btn" onclick="kopieren()">Kopieren 📋</button>
       </div>
 
-      <div class="bewertung-box">
-        <div class="bewertung-frage">War die Antwort hilfreich?</div>
-        <div class="bewertung-buttons" id="bewertung-buttons">
-          <button class="bewertung-btn" onclick="sendeBewertung('positiv', this)">👍 Ja, passte gut</button>
-          <button class="bewertung-btn" onclick="sendeBewertung('teilweise', this)">🤔 Teilweise</button>
-          <button class="bewertung-btn" onclick="sendeBewertung('negativ', this)">👎 Nein, passte nicht</button>
-        </div>
-        <div class="bewertung-danke hidden" id="bewertung-danke">
-          Danke! Im nächsten Modul kannst Du uns mehr dazu sagen.
-        </div>
-      </div>
-
       <div class="mut-box" id="mut-text"></div>
 
       <div class="upsell-card">
@@ -632,14 +620,6 @@
 
   </div>
 </div>
-
-<!-- Verstecktes Formular für Netlify Forms Erkennung -->
-<form name="mic-drop-bewertung" netlify hidden>
-  <input type="hidden" name="bewertung">
-  <input type="hidden" name="situation">
-  <input type="hidden" name="kanal">
-  <input type="hidden" name="ton">
-</form>
 
 <script>
   const FUNCTION_URL = "/.netlify/functions/generate";
@@ -829,22 +809,6 @@
       btn.textContent = "Kopiert ✓";
       setTimeout(() => { btn.textContent = original; }, 1500);
     });
-  }
-
-  function sendeBewertung(wert, btn) {
-    fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        "form-name": "mic-drop-bewertung",
-        "bewertung": wert,
-        "situation": state.situation,
-        "kanal": state.kanal,
-        "ton": state.ton,
-      }).toString(),
-    }).catch(() => {});
-    document.getElementById("bewertung-buttons").classList.add("hidden");
-    document.getElementById("bewertung-danke").classList.remove("hidden");
   }
 
   zeigeZaehler();
