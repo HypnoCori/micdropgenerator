@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback – The Mic Drop Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800;1,700;1,800&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --petrol: #2e8896;
+    --petrol-deep: #1f6b78;
+    --petrol-tint: #f4f9fa;
+    --gold: #C8BA94;
+    --gold-deep: #a89660;
+    --gold-pale: #fbf9f4;
+    --ink: #0B1D51;
+    --ink-mid: rgba(11,29,81,0.7);
+    --ink-soft: rgba(11,29,81,0.45);
+    --ink-faint: rgba(11,29,81,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: transparent;
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    padding: 20px 10px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app-card {
+    max-width: 680px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid rgba(11,29,81,0.1);
+    box-shadow: 0 32px 64px rgba(11,29,81,0.08), 0 4px 16px rgba(11,29,81,0.02);
+    overflow: hidden;
+  }
+
+  .app-top-strip {
+    background: var(--petrol-tint);
+    padding: 12px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--ink-faint);
+  }
+
+  .badge-creator {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--petrol-deep);
+  }
+
+  .app-hero-zone {
+    padding: 36px 32px 28px;
+    text-align: center;
+    background: radial-gradient(100% 100% at 50% 0%, rgba(46,136,150,0.04) 0%, rgba(255,255,255,1) 100%);
+    border-bottom: 1px solid var(--ink-faint);
+  }
+
+  .main-product-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .main-product-title .highlight {
+    color: var(--petrol);
+    font-style: italic;
+  }
+
+  .hero-subtitle-b {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+
+  .hero-subtitle-b::before {
+    content: "";
+    width: 36px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold-deep));
+  }
+
+  .hero-subtitle-b::after {
+    content: "";
+    width: 36px;
+    height: 2px;
+    background: linear-gradient(to left, transparent, var(--gold-deep));
+  }
+
+  .app-body { padding: 32px; }
+
+  .versprechen-box {
+    background: var(--petrol-tint);
+    border: 1px solid rgba(46,136,150,0.2);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 28px;
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  .versprechen-box strong {
+    color: var(--petrol-deep);
+    font-weight: 600;
+  }
+
+  .frage-label {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+    margin-top: 20px;
+  }
+
+  .frage-label:first-of-type { margin-top: 0; }
+
+  .auswahl-gruppe {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+
+  .auswahl-btn {
+    padding: 10px 16px;
+    border: 1px solid var(--ink-faint);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--ink-mid);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .auswahl-btn:hover { border-color: var(--petrol); color: var(--petrol); background: var(--petrol-tint); }
+  .auswahl-btn.gewaehlt { background: var(--petrol); border-color: var(--petrol); color: #fff; }
+
+  textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 14px;
+    border: 1px solid rgba(11,29,81,0.15);
+    border-radius: 10px;
+    background: #fafafa;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    resize: vertical;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+  }
+
+  textarea:focus { outline: none; border-color: var(--petrol); background: #fff; box-shadow: 0 0 0 3px rgba(46,136,150,0.15); }
+
+  input[type="hidden"] { display: none; }
+
+  .senden-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background: var(--petrol);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 24px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(46,136,150,0.2);
+  }
+
+  .senden-btn:hover { background: var(--petrol-deep); transform: translateY(-1px); }
+
+  .danke-box {
+    text-align: center;
+    padding: 40px 20px;
+    display: none;
+  }
+
+  .danke-box .danke-icon { font-size: 48px; margin-bottom: 16px; }
+
+  .danke-box h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .danke-box p {
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.6;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-card">
+
+  <div class="app-top-strip">
+    <div class="badge-creator">Entwickelt von Corinna Eichholz</div>
+  </div>
+
+  <div class="app-hero-zone">
+    <h1 class="main-product-title">The Mic Drop <span class="highlight">Generator</span> 🎙️</h1>
+    <p class="hero-subtitle-b">Dein Feedback</p>
+  </div>
+
+  <div class="app-body">
+
+    <div class="versprechen-box">
+      <strong>Du hilfst, den Generator besser zu machen.</strong><br>
+      Jedes Update, jede Verbesserung entsteht durch Feedback wie Deins. Als Käuferin bekommst Du alle zukünftigen Updates automatisch und kostenlos.
+    </div>
+
+    <form id="feedback-form" netlify name="mic-drop-feedback" method="POST">
+      <input type="hidden" name="form-name" value="mic-drop-feedback">
+
+      <label class="frage-label">Was hat gut funktioniert?</label>
+      <textarea name="positiv" placeholder="Optional – was war hilfreich oder treffend?"></textarea>
+
+      <label class="frage-label">Was hätte besser gepasst?</label>
+      <textarea name="verbesserung" placeholder="Was hat gefehlt oder hat nicht gestimmt?"></textarea>
+
+      <label class="frage-label">Welche Situation hast Du eingegeben? (optional)</label>
+      <textarea name="situation" placeholder="Hilft uns, den Generator für ähnliche Fälle zu verbessern."></textarea>
+
+      <button type="submit" class="senden-btn">Feedback absenden →</button>
+    </form>
+
+    <div class="danke-box" id="danke-box">
+      <div class="danke-icon">🙏</div>
+      <h2>Danke für Dein Feedback!</h2>
+      <p>Du hilfst dabei, den Generator für alle besser zu machen. Alle Updates kommen automatisch zu Dir.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.getElementById("feedback-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const form = this;
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(new FormData(form)).toString(),
+    })
+    .then(() => {
+      form.style.display = "none";
+      document.getElementById("danke-box").style.display = "block";
+    })
+    .catch(() => {
+      form.submit();
+    });
+  });
+</script>
+
+</body>
+</html>
