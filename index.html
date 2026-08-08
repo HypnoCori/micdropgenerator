@@ -285,8 +285,8 @@
     background: #ffffff;
     border: 1px solid var(--gold);
     border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
     box-shadow: 0 6px 20px rgba(200, 186, 148, 0.15);
   }
 
@@ -297,15 +297,15 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--gold-deep);
-    margin-bottom: 12px;
+    margin-bottom: 16px;
   }
 
   .ergebnis-text {
     font-size: 16px;
-    line-height: 1.65;
+    line-height: 1.75;
     color: var(--ink);
     white-space: pre-wrap;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .kopier-btn {
@@ -329,25 +329,28 @@
     color: var(--ink);
     background: var(--petrol-tint);
     border-left: 3px solid var(--petrol);
-    padding: 14px 18px;
+    padding: 20px 22px;
     border-radius: 0 8px 8px 0;
-    margin-bottom: 24px;
+    margin-top: 8px;
+    margin-bottom: 32px;
+    line-height: 1.7;
   }
 
   .upsell-card {
-    background: #ffffff;
-    border: 1.5px solid var(--petrol);
+    background: var(--gold-pale);
+    border: 1px solid var(--gold);
+    border-top: 3px solid var(--gold-deep);
     border-radius: 16px;
-    padding: 24px;
-    margin-top: 28px;
-    margin-bottom: 20px;
-    box-shadow: 0 12px 28px rgba(46, 136, 150, 0.1);
+    padding: 36px 28px;
+    margin-top: 12px;
+    margin-bottom: 24px;
+    text-align: center;
   }
 
   .upsell-header {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 19px;
+    font-weight: 800;
     color: var(--ink);
     margin-bottom: 12px;
     line-height: 1.3;
@@ -357,7 +360,10 @@
     font-size: 14px;
     color: var(--ink-mid);
     line-height: 1.6;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
+    max-width: 380px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .upsell-cta-btn {
@@ -366,36 +372,45 @@
     justify-content: center;
     width: 100%;
     background: var(--petrol);
-    color: #ffffff;
-    text-decoration: none;
+    color: #ffffff !important;
+    text-decoration: none !important;
     border: none;
     border-radius: 10px;
     padding: 16px 20px;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
     text-align: center;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(46, 136, 150, 0.25);
+    box-shadow: 0 4px 12px rgba(46,136,150,0.2);
   }
 
-  .upsell-cta-btn:hover { background: var(--petrol-deep); transform: translateY(-1px); }
+  .upsell-cta-btn:hover { background: var(--petrol-deep); transform: translateY(-1px); color: #ffffff !important; }
 
   .neu-btn {
+    display: block;
     width: 100%;
-    background: transparent;
-    border: 1px solid var(--ink-faint);
-    border-radius: 8px;
-    color: var(--ink-soft);
-    padding: 12px;
+    background: #fff;
+    border: 1.5px solid var(--petrol);
+    border-radius: 10px;
+    color: var(--petrol);
+    padding: 14px 20px;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    text-align: center;
   }
 
-  .neu-btn:hover { border-color: var(--petrol); color: var(--petrol); }
+  .neu-btn:hover {
+    background: var(--petrol-tint);
+    border-color: var(--petrol-deep);
+    color: var(--petrol-deep);
+    transform: translateY(-1px);
+  }
 
   .fehler {
     background: #fdf2f2;
@@ -502,7 +517,7 @@
 
   <div class="app-hero-zone">
     <h1 class="main-product-title">The Mic Drop <span class="highlight">Generator</span> 🎙️</h1>
-    <p class="hero-subtitle-b">Klartext auf Knopfdruck</p>
+    <p class="hero-subtitle-b">✨ Klartext auf Knopfdruck</p>
   </div>
 
   <div class="app-body">
@@ -601,21 +616,26 @@
 
     <!-- ERGEBNIS -->
     <div class="schritt" id="schritt-ergebnis">
-      <div class="ergebnis-karte">
-        <div class="ergebnis-label" id="ergebnis-label">Deine Antwort</div>
-        <div class="ergebnis-text" id="ergebnis-text"></div>
-        <button class="kopier-btn" onclick="kopieren()">Kopieren 📋</button>
+      <div style="margin-bottom: 28px;">
+        <div class="mut-box">💡 <span id="mut-text"></span></div>
       </div>
 
-      <div class="mut-box" id="mut-text"></div>
+      <div class="ergebnis-karte">
+        <div class="ergebnis-label" id="ergebnis-label">✦ Deine Antwort</div>
+        <div class="ergebnis-text" id="ergebnis-text"></div>
+        <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap; margin-top: 4px;">
+          <button class="kopier-btn" onclick="kopieren()">Kopieren 📋</button>
+          <button onclick="neuGenerieren()" style="background:none;border:none;color:var(--ink-soft);font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;padding:0;text-decoration:none;">Noch kein Perfect Match? Neu generieren</button>
+        </div>
+      </div>
 
       <div class="upsell-card">
+        <div style="font-size: 28px; margin-bottom: 14px;">🪶</div>
         <div class="upsell-header" id="upsell-header"></div>
         <div class="upsell-text" id="upsell-body"></div>
         <a href="https://corinnaeichholz.thrivecart.com/regulate97/" class="upsell-cta-btn" id="upsell-cta" target="_blank"></a>
       </div>
 
-      <button class="neu-btn" onclick="neuGenerieren()">+ Antwort neu generieren</button>
     </div>
 
   </div>
@@ -628,19 +648,19 @@
 
   const upsellVarianten = [
     {
-      header: "Die Antwort steht. Aber wie fühlt sich Dein Körper gerade an?",
-      text: "Der Generator nimmt Dir den Kopfstress beim Antworten ab. Wenn Du spürst, dass die Anspannung in solchen Momenten trotzdem tief sitzt, ist Regulate Deine Abkürzung.",
-      cta: "Ja, ich will die Anspannung im Körper auflösen →"
+      header: "Stell Dir vor: Die Nachricht kommt. Und Du bist einfach ruhig.",
+      text: "Kein Herzklopfen, kein stundenlanges Grübeln. Nur Klarheit. Das ist kein Wunschdenken, das ist möglich.",
+      cta: "Ja, ich will diese Ruhe."
     },
     {
-      header: "Souverän getippt. Aber wie steht es um Dein Nervensystem?",
-      text: "Klartext senden ist der erste Schritt. Damit sich solche Nachrichten auch innerlich nicht mehr nach Gefahr anfühlen, hilft Dir Regulate.",
-      cta: "Ja, ich will echte innere Ruhe spüren →"
+      header: "Und wenn das nächste Mal direkt die richtige Antwort da ist?",
+      text: "Kein Nachgrübeln, kein Herzrasen. Einfach klar. Das ist kein Zufall, das ist möglich.",
+      cta: "Ja, genau das will ich."
     },
     {
-      header: "Grenze gesetzt. Lässt Dein System die Anspannung schon los?",
-      text: "Die richtigen Worte zu haben befreit. Mit Regulate lernst Du, klare Grenzen zu setzen, ohne danach stundenlang körperlich damit beschäftigt zu sein.",
-      cta: "Ja, ich will Grenzen ohne Körperstress setzen →"
+      header: "Was wäre, wenn solche Momente einfach nichts mehr mit Dir machen?",
+      text: "Wenn Du die Nachricht liest und Dein Körper entspannt bleibt. Das ist kein Wunschdenken, das ist möglich.",
+      cta: "Das will ich auch."
     }
   ];
 
