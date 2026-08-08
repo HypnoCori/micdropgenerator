@@ -258,12 +258,23 @@ Erzeuge GENAU ZWEI Texte:
 
 KRITISCH: Die Antwort darf NUR auf das eingehen, was die andere Person tatsächlich geschrieben oder gesagt hat. Nicht auf das, was sie vielleicht gemeint haben könnte. Nicht auf ein Schema, das bei ähnlichen Situationen passt. Wenn jemand sagt "das ist mir zu teuer", hat sie NICHT nach einer Preisanpassung gefragt. Die Antwort darf also nicht "mein Preis bleibt wie er ist" enthalten, weil das niemand gefragt hat. Sie antwortet auf die tatsächliche Aussage, nicht auf eine imaginierte Folgefrage.
 
-2. "mut": Maximal 2 Sätze NUR für die Nutzerin selbst. Konkret auf ihre Situation bezogen, ermutigend, darf kurz das Nervensystem ansprechen.
+2. "mut": 3-5 Sätze NUR für die Nutzerin selbst, KEINE Antwort an die Kundin.
+Erkläre sanft und menschlich, was gerade in ihrem Körper passiert, basierend auf dem, was sie in den Feldern "was geht in Dir vor" und "was fühlst Du" geschrieben hat.
+
+Folge dabei IMMER dieser Logik von Corinna:
+- Das Nervensystem kennt nur zwei Zustände: sicher oder Gefahr. Es reagiert auf Muster aus der Vergangenheit, nicht auf die tatsächliche Situation heute.
+- Was die Nutzerin gerade fühlt (Herzklopfen, Enge, Anspannung) ist keine Schwäche. Ihr Nervensystem tut genau das, wofür es gebaut wurde: sie schützen.
+- Irgendwann gab es einen guten Grund, so zu reagieren. Vielleicht war Ablehnung einmal wirklich gefährlich. Vielleicht war es einmal nötig, klein zu bleiben oder nicht aufzufallen.
+- Das System hat nur kein Update bekommen, dass es diesen Grund heute nicht mehr gibt.
+- Es ist IMMER zum Schutz, niemals gegen sie. Niemals weil sie unfähig, doof oder falsch wären.
+- Und dann der Dreh: Es ist in Ordnung, heute für sich einzustehen. Es ist in Ordnung, Grenzen zu setzen. Es ist in Ordnung, einen angemessenen Preis zu nehmen. Ihr Körper lernt das gerade, Schritt für Schritt.
+
+WICHTIG: Nie "Dein Nervensystem ist das Problem". Nie "heilen". Nie verschachtelte Relativsätze. Kein "Nicht... sondern...". Warmherzig, klar, zwei bis drei kurze Sätze pro Gedanke.
 
 Antworte NUR als valides JSON ohne Markdown:
 {"antwort": "...", "mut": "..."}
 
-(Intern: Variations-Kennung ${variationSeed})
+(Intern: Variations-Kennung ${variationSeed}. Lies bei diesem Anlauf noch einmal sehr genau, was die Person in allen Feldern geschrieben hat. Was sagt sie zwischen den Zeilen? Welche Emotion steckt hinter ihrem ersten Gedanken? Was braucht sie wirklich in dieser Antwort? Formuliere so, dass sie das Gefühl hat: genau das wollte ich sagen. Vermeide Formulierungen aus einer möglichen vorherigen Generierung zur gleichen Situation.)
       `.trim();
 
       const userPrompt = `
@@ -273,7 +284,7 @@ Was sie eigentlich sagen würde: ${wunsch || "(nicht angegeben)"}
 Was sich verändern würde, wenn ihr das leicht fällt: ${vision || "(nicht angegeben)"}
       `.trim();
 
-      const raw = await callClaude(systemPrompt, userPrompt, 500);
+      const raw = await callClaude(systemPrompt, userPrompt, 900);
 
       let parsed;
       try {
